@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import { CreateVariable } from '../saveVariables';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentProject, selectPredParams, selectUserID, selectUserImage, selectUserName, setPredParams } from '../../../features/userSlice';
+import { selectAddParams, selectCurrentProject, selectPredParams, selectUserID, selectUserImage, selectUserName, setPredParams } from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 
@@ -27,15 +27,17 @@ const theme = createTheme({
 
 
 let projectNumber=0;
+const aux2=[];
 export default function AddPredParams() {
 
   const dispatch= useDispatch();
+  const addParams=useSelector(selectAddParams);
   const uid= useSelector(selectUserID);
   const name= useSelector(selectUserName);
   const image= useSelector(selectUserImage);
   const currentProject= useSelector(selectCurrentProject);
-  let aux= useSelector(selectPredParams);
-
+  const aux= useSelector(selectPredParams);
+  
   const [selectItem, setSelectItem] = React.useState([]);
 
   const id=useSelector(selectCurrentProject).id;
@@ -60,10 +62,9 @@ export default function AddPredParams() {
   };
     
   setForm(params);
+  aux2.push(params);
   console.log(params);
-  //aux.length=2;
- //aux.push(params);
-  console.log(aux);
+  console.log(aux2,aux,name);
   
   dispatch(setPredParams({
     userName: name,
