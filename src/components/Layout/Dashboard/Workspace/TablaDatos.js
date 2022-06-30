@@ -24,6 +24,8 @@ import { collection, onSnapshot, query } from 'firebase/firestore';
 import { useSelector } from 'react-redux';
 import { selectCurrentProject } from '../../../../features/userSlice';
 import { db } from '../../../../firebase/firebaseconfig';
+import { DeleteProjectDb } from './DeleteElementDB';
+import { DeleteVariableTemp } from '../../../Forms/DeleteVariable';
 
 function createData(name) {
   return {
@@ -40,7 +42,9 @@ const rows=[
 ];*/
 
 
-
+let id2=[];
+let data2=[];
+let ref2=[];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -83,6 +87,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
+  
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
     props;
   const createSortHandler = (property) => (event) => {
@@ -139,8 +144,14 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
-  const { numSelected } = props;
-
+  const idProject=useSelector(selectCurrentProject).id;
+  const { numSelected, data, category } = props;
+  const handleDelete=(event) => {
+    event.preventDefault();
+  //DeleteProjectDb(ref2,data2);}
+//console.log(numSelected, data, category);
+DeleteVariableTemp(category,data,idProject);  
+}
   return (
     <Toolbar
       sx={{
@@ -173,8 +184,8 @@ const EnhancedTableToolbar = (props) => {
       )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
+        <Tooltip title="Delete" >
+          <IconButton onClick={handleDelete} >
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -196,6 +207,7 @@ export default function EnhancedTable(props) {
   const id=props.id;
   const projectID=useSelector(selectCurrentProject);
   const ref="/Projects/"+projectID.id+"/"+id;
+  ref2=ref;
   const q = query(collection(db, ref));
   const projectData =[];
   const [projectVariables, setProjectVariables] = React.useState([]);
@@ -220,7 +232,7 @@ const aux2= projectVariables.map((name)=>{
   
 
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [orderBy, setOrderBy] = React.useState('Name');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
@@ -259,8 +271,10 @@ const aux2= projectVariables.map((name)=>{
     }
 
     setSelected(newSelected);
+    
+    //data2=newSelected;
   };
-
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -282,11 +296,11 @@ const aux2= projectVariables.map((name)=>{
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+      <Paper sx={{ width: '100%', mb: 0 }}>
+        <EnhancedTableToolbar numSelected={selected.length} data={selected} category={id} />
         <TableContainer>
           <Table
-            sx={{ minWidth: 750 }}
+            sx={{ minWidth: 1 }}
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
           >

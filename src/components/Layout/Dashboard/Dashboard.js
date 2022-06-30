@@ -17,7 +17,8 @@ import BasicMenu from './menuSesionUser';
 import MainListItems from './Sidebar/listCreateElements';
 import FullWidthTabs from './Workspace/workspaceVariables';
 import Copyrigth from '../copyrigth';
-import Diagrama from './Diagram';
+//import Diagrama from './Diagram';
+import Diagrama1 from './Diagram2';
 
 
 const drawerWidth = 240;
@@ -156,7 +157,7 @@ function DashboardContent() {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             
             <Grid container spacing={4} direction="row" justifyContent="center" alignItems="center" >
-              <Grid item xs={12}>
+              <Grid item xs={8}>
                 <Paper
                   sx={{
                     p: 2,
@@ -166,10 +167,10 @@ function DashboardContent() {
                     height: '85vh',
                   }}
                 >
-                  <Diagrama />
+                  <Diagrama1 />
                 </Paper>
               </Grid>
-              <Grid item xs={7}>
+              <Grid item xs={4}>
               
                 <Paper
                   sx={{
@@ -183,8 +184,9 @@ function DashboardContent() {
                 </Paper>
               </Grid>              
             </Grid>
-            <Copyrigth sx={{ pt: 4, }} />
+            
           </Container>
+          <Copyrigth sx={{ pt: 4 }} />
         </Box>
       </Box>
     </ThemeProvider>

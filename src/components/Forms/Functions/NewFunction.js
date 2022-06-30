@@ -17,7 +17,11 @@ import Checkbox from '@mui/material/Checkbox';
 import { CreateVariable } from '../saveVariables';
 import { useSelector } from 'react-redux';
 import { selectCurrentProject } from '../../../features/userSlice';
-import GutterlessListFx from './listParamsFx';
+
+import { DeleteVariableTemp } from '../DeleteVariable';
+import { collection, onSnapshot, query } from 'firebase/firestore';
+import GutterlessList from '../Predicates/listParamsPred';
+import { db } from '../../../firebase/firebaseconfig';
 
 const theme = createTheme();
 
@@ -26,6 +30,26 @@ export default function NewFunction() {
   const [alignment, setAlignment] = React.useState('static');
   const [alignment2, setAlignment2] = React.useState('internal');
   const [checked, setChecked] = React.useState(false);
+
+  const ref2="FunctionTempData";
+  const ref3="/Projects/"+id+"/FunctionTempData";
+  const q = query(collection(db, ref3));
+  const [FxParams, setFxParams] = React.useState([]);
+  const [FxParamsID, setFxParamsID] = React.useState([]);
+
+  const projects=[];
+    const projectListNames=[];
+   const data2 = onSnapshot(q,(querySnapshot)=>{
+     
+     querySnapshot.forEach((doc)=>{
+       projects.push(doc.data());
+       projectListNames.push(doc.id);
+     })
+     //console.log(projects);
+     setFxParams(projects);
+     setFxParamsID(projectListNames);
+
+   })
 
   const handleChangeCheck = (event) => {
     setChecked(event.target.checked);
@@ -54,11 +78,19 @@ export default function NewFunction() {
       persistent: checked,
       cat1: alignment,
       cat2: alignment2,
+      Params: FxParams,
   };
   CreateVariable(data.get('name'), "Functions", params, id);
     console.log(params);
+    DeleteVariableTemp(ref2, FxParamsID, id);
    navigate("/dashboard");
     
+  };
+
+  const handleCancel=(event)=>{
+    event.preventDefault();
+    DeleteVariableTemp(ref2, FxParamsID, id);
+    navigate("/dashboard");
   };
   return (
     <ThemeProvider theme={theme}>
@@ -132,27 +164,27 @@ export default function NewFunction() {
               fullWidth
               color='primary'
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 0 }}
               onClick={handleAddParameter}
               
             >
               Add Parameter
             </Button>
-            <GutterlessListFx params={[1]} />
-
+           
+            <GutterlessList params={FxParams} />
             
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 0, mb: 2 }}
               
             >
               Create
             </Button>
             <Button
               color='secondary'
-              onClick={()=>{navigate("/dashboard");}}
+              onClick={handleCancel}
               fullWidth
               variant="contained"
               sx={{ mt: 0, mb: 2 }}

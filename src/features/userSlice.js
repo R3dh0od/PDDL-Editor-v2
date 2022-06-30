@@ -8,6 +8,7 @@ const initialState = {
     currentProject: {id: {}, projectName:{}},
     projectList: {id: {}, projectName: {}},
     predParams:[],
+    addParams: {},
 }
 
 
@@ -37,6 +38,9 @@ const userSlice = createSlice({
       setPredParams: (state, action)=>{
         state.predParams=action.payload.predParams
       },
+      setAddParams:(state,action)=>{
+        state.addParams=action.payload.addParams
+      },
   }
 });
 
@@ -46,7 +50,9 @@ export const {
   setUserLogOutState, 
   setCurrentProject, 
   setProjectList, 
-  setPredParams, } = userSlice.actions
+  setPredParams,
+  setAddParams, 
+} = userSlice.actions
 
 export const selectUserID = state => state.user.uid
 export const selectUserName = state => state.user.userName
@@ -54,5 +60,6 @@ export const selectUserImage = state => state.user.userImage
 export const selectCurrentProject = state => state.user.currentProject
 export const selectProjectList = state => state.user.projectList
 export const selectPredParams = state => state.user.predParams
+export const selectAddParams= state => state.user.addParams
 
 export default userSlice.reducer

@@ -20,12 +20,17 @@ import { useSelector } from 'react-redux';
 import { selectCurrentProject } from '../../../features/userSlice';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseconfig';
+import GutterlessList from '../Predicates/listParamsPred';
+import { DeleteVariableTemp } from '../DeleteVariable';
+import GutterlessListpredAction from './listActionpreds';
+import GutterlessListFxState from '../States/listFxStates';
 
 
 const theme = createTheme();
 let projectNumber=0;
 let projectNumber2=0;
 export default function NewAction() {
+  
   const id=useSelector(selectCurrentProject).id;
   const [stateList, setStateList] = React.useState([]);
   const [stateList2, setStateList2] = React.useState([]);
@@ -34,11 +39,56 @@ export default function NewAction() {
   const [selectItem, setSelectItem] = React.useState([]);
   const [selectItem2, setSelectItem2] = React.useState([]);
   
+  const ref2="PredicateTempData";
+  const ref3="/Projects/"+id+"/PredicateTempData";
+  const q2 = query(collection(db, ref3));
+  const [predParams, setPredParams] = React.useState([]);
+  const [predParamsID, setPredParamsID] = React.useState([]);
+
+  const projects=[];
+    const projectListNames=[];
+   const data3 = onSnapshot(q2,(querySnapshot)=>{
+     
+     querySnapshot.forEach((doc)=>{
+       projects.push(doc.data());
+       projectListNames.push(doc.id);
+     })
+     //console.log(projects);
+     setPredParams(projects);
+     setPredParamsID(projectListNames);
+
+   })
+
+
+   const ref4="FxTempData";
+  const ref5="/Projects/"+id+"/FxTempData";
+  const q3 = query(collection(db, ref5));
+  const [fxParams, setFxParams] = React.useState([]);
+  const [fxParamsID, setFxParamsID] = React.useState([]);
+
+  const projects2=[];
+    const projectListNames2=[];
+   const data2 = onSnapshot(q3,(querySnapshot)=>{
+     
+     querySnapshot.forEach((doc)=>{
+       projects2.push(doc.data());
+       projectListNames2.push(doc.id);
+     })
+     //console.log(projects);
+     setFxParams(projects2);
+     setFxParamsID(projectListNames2);
+
+   })
+  
+  
+
+
+
   const ref="/Projects/"+id+"/States";
   const q = query(collection(db, ref));
   const states=[];
     
-   const data2 = onSnapshot(q,(querySnapshot)=>{
+   const data4 = onSnapshot(q,(querySnapshot)=>{
      
      querySnapshot.forEach((doc)=>{
        states.push(doc.data());
@@ -90,12 +140,24 @@ export default function NewAction() {
       name: data.get('name'),
       InitialState: stateList[projectNumber].name,
       EndState: stateList2[projectNumber2].name,
+      ParamsPred: predParams,
+      ParamsFx: fxParams,
   };
   CreateVariable(data.get('name'), "Actions", params, id);
     console.log(params);
+    DeleteVariableTemp(ref2, predParamsID, id);
+    DeleteVariableTemp(ref4, fxParamsID, id);
    navigate("/dashboard");
     
   };
+
+  const handleCancel=(event)=>{
+    event.preventDefault();
+    DeleteVariableTemp(ref2, predParamsID, id);
+    DeleteVariableTemp(ref4, fxParamsID, id);
+    navigate("/dashboard");
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -167,24 +229,26 @@ export default function NewAction() {
               color='primary'
               variant="contained"
               onClick={()=>{navigate("/addactionparams");}}
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 0 }}
               
               
             >
               Add Predicate
             </Button>
+            <GutterlessListpredAction params={predParams} />
             <Button
               
               fullWidth
               color='primary'
               variant="contained"
               
-              sx={{ mt: 0, mb: 2 }}
+              sx={{ mt: 0, mb: 0 }}
               
               onClick={()=>{navigate("/addactionfunction");}}
             >
               Add Function
             </Button>
+            <GutterlessListFxState params={fxParamsID} />
             <Button
               type="submit"
               fullWidth
@@ -196,7 +260,7 @@ export default function NewAction() {
             </Button>
             <Button
               color='secondary'
-              onClick={()=>{navigate("/dashboard");}}
+              onClick={handleCancel}
               fullWidth
               variant="contained"
               sx={{ mt: 0, mb: 2 }}

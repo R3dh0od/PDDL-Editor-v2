@@ -7,6 +7,7 @@ import { styled } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentProject, selectUserID, selectUserImage, selectUserName, setPredParams } from '../../../../features/userSlice';
+import { aux2 } from '../../../Forms/temporalVariables';
 
 
 const style = {
@@ -38,6 +39,7 @@ export default function BasicModal({titulo, icono, tituloModal, dir}) {
     const params={};
     const navigate= useNavigate();
     const handleClick=()=>{
+      
       dispatch(setPredParams({
         userName: name,
         userUid: uid,

@@ -2,23 +2,55 @@ import React, { useState } from 'react';
 import * as go from 'gojs';
 import { ReactDiagram } from 'gojs-react';
 import '../../../Styles/index.css';
+import { useSelector } from 'react-redux';
+import { selectCurrentProject } from '../../../features/userSlice';
+import { collection, onSnapshot, query } from 'firebase/firestore';
+import { db } from '../../../firebase/firebaseconfig';
+
+function createData(text) {
+  return {
+    text,
+
+  };
+}
+
 
 export default function Diagrama() {
+  const projectData =[];
+  const projectID=useSelector(selectCurrentProject);
+  const ref="/Projects/"+projectID.id+"/States";
+  const q = query(collection(db, ref));
+  
+  const [projectVariables, setProjectVariables] = React.useState([]);
+  const data2 = onSnapshot(q,(querySnapshot)=>{
+    
+    querySnapshot.forEach((doc)=>{
+      projectData.push(doc.data());
+      
+    })
+    //console.log(projects);
+    
+    setProjectVariables(projectData);
+   
+   
+    
+  })
+  //console.log(projectData);
+  const rows=[];
+const aux2= projectVariables.map((name)=>{
+  rows.push(createData(name.name));
+  }) ;
+ //console.log(rows);
+ 
   // state variables
-  const [nodeDataArray, setNodeDataArray] = useState([
-    { key: 1, text: 'Alpha', color: 'lightblue' },
-    { key: 2, text: 'Beta', color: 'orange' },
-    { key: 3, text: 'Gamma', color: 'lightgreen' },
-    { key: 4, text: 'Delta', color: 'pink' }
-  ]);
-  const [linkDataArray, setLinkDataArray] = useState([
-    { key: -1, from: 1, to: 2 },
-    { key: -2, from: 1, to: 3 },
-    { key: -3, from: 2, to: 2 },
-    { key: -4, from: 3, to: 4 },
-    { key: -5, from: 4, to: 1 }
+  const [nodeDataArray, setNodeDataArray] = useState(
+    rows);
+    
+  const [linkDataArray, setLinkDataArray] = useState( [
+  
   ]);
   const [skipsDiagramUpdate, setSkipsDiagramUpdate] = useState(false);
+  
 
   // maps for faster state modification
   const mapNodeKeyIdx = new Map();
@@ -31,6 +63,7 @@ export default function Diagrama() {
     nodeArr.forEach((n, idx) => {
       mapNodeKeyIdx.set(n.key, idx);
     });
+   
   }
 
   function refreshLinkIndex(linkArr) {

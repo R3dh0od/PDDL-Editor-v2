@@ -39,7 +39,7 @@ export const NewProject=()=> {
         userImage: image,
         currentProject: {id: result, projectName: project},
       }))
-      CreateVariable("None","Types",{name: "none", subtypeOf: null},result);
+      CreateVariable("Object","Types",{name: "object", subtypeOf: null},result);
     });
     
    navigate("/dashboard");
@@ -85,6 +85,16 @@ export const NewProject=()=> {
               
             >
               Create
+            </Button>
+            <Button
+              color='secondary'
+              onClick={()=>{navigate("/projects");}}
+              fullWidth
+              variant="contained"
+              sx={{ mt: 0, mb: 2 }}
+              
+            >
+              Cancel
             </Button>
            
           </Box>

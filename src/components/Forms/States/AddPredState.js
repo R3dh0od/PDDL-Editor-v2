@@ -18,6 +18,8 @@ import { selectCurrentProject, selectPredParams, selectUserID, selectUserImage, 
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import { Checkbox, FormControlLabel } from '@mui/material';
+import { CreateVariableTemp } from '../saveTemporalVariables';
+import { CreateVariableTempPredState } from './tempData';
 
 
 const theme = createTheme({
@@ -29,25 +31,33 @@ const theme = createTheme({
 
 let projectNumber=0;
 export default function AddPredState() {
-
-  const dispatch= useDispatch();
-  const uid= useSelector(selectUserID);
-  const name= useSelector(selectUserName);
-  const image= useSelector(selectUserImage);
-  const currentProject= useSelector(selectCurrentProject);
-  let aux= useSelector(selectPredParams);
-
-  const [selectItem, setSelectItem] = React.useState([]);
-
+ 
+  const ref2="PredicateTempData";
   const id=useSelector(selectCurrentProject).id;
   
   const ref="/Projects/"+id+"/Predicates";
   const q = query(collection(db, ref));
   
   const [form, setForm]=React.useState([]);
-  const [subtype, setSubtype] = React.useState([]);
+  
   const navigate= useNavigate();
+
+  const projects=[];
+  const projectListNames=[];
+  const data2 = onSnapshot(q,(querySnapshot)=>{
+   
+   querySnapshot.forEach((doc)=>{
+     projects.push(doc.data());
+   })
+   //console.log(projects);
+   setForm(projects);
+   
+ })
+
+ const [subtype, setSubtype] = React.useState();
+
   const handleChangeSubtype = (event) => {
+    event.preventDefault();
     setSubtype(event.target.value);
   };
   const handleCreate = (event) => {
@@ -56,54 +66,17 @@ export default function AddPredState() {
     const params={
       not: checked,
 
-      type: subtype[projectNumber].name,
+      predicate: subtype,
       
   };
     
-  setForm(params);
+  
   console.log(params);
-  //aux.length=2;
- //aux.push(params);
-  console.log(aux);
-  
-  dispatch(setPredParams({
-    userName: name,
-    userUid: uid,
-    userImage: image,
-    currentProject: currentProject,
-    predParams: params,
-  }))  
+  CreateVariableTempPredState(ref2, params, id);
   navigate("/newstate");
-  // navigate("/newpredicate");
-    
+
   };
   
-    const projects=[];
-    const projectListNames=[];
-   const data2 = onSnapshot(q,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       projects.push(doc.data());
-     })
-     //console.log(projects);
-     setSubtype(projects);
-
-   })
-
-   const handleChangeMultiple = (event) => {
-    event.preventDefault();
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-        projectNumber=i;
-      }
-    }
-    setSelectItem(value); 
-    
-  };
-
 //checkbox
   const [checked, setChecked] = React.useState(false);
 
@@ -136,18 +109,16 @@ export default function AddPredState() {
             label="NOT" />
             <Select
               
-              native
+              
               fullWidth
-              value={selectItem}
-              onChange={handleChangeMultiple}
+              value={subtype}
+              onChange={handleChangeSubtype}
               inputProps={{
                 id: 'select-multiple-native',
               }}
             >
-              {subtype.map((name) => (
-                <option key={name.name} value={name.name}>
-                  {name.name}
-                </option>
+              {form.map((name) => (
+                <MenuItem value={name.name}>{name.name}</MenuItem>
               ))}
             </Select>
 

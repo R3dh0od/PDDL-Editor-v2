@@ -8,24 +8,23 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useSelector } from 'react-redux';
 import { selectPredParams } from '../../../features/userSlice';
 
-export default function GutterlessListFx({params}) {
-    const predParams=useSelector(selectPredParams);
+export default function GutterlessListpredAction({params}) {
     const params2=[];
-    params2.push(predParams);
+    params2.push(params);
     //console.log(params2);
   return (
     <List sx={{ width: '100%', maxWidth: 360, ml: 3 }}>
       {params.map((value) => (
         <ListItem
-          key={value}
+          key={value.predicate}
           disableGutters
           secondaryAction={
             <IconButton aria-label="comment">
-              <DeleteIcon fontSize='medium' />
+              
             </IconButton>
           }
         >
-          <ListItemText primary={`Line item ${value}`} />
+          <ListItemText primary={value.predicate} />
         </ListItem>
       ))}
     </List>

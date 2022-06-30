@@ -17,6 +17,9 @@ import { useSelector } from 'react-redux';
 import { selectCurrentProject } from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, onSnapshot, query } from 'firebase/firestore';
+import { CreateVariableTemp } from '../saveTemporalVariables';
+import { CreateVariableTempFxState } from '../States/tempDatafxState';
+
 
 
 const theme = createTheme({
@@ -28,7 +31,7 @@ let projectNumber=0;
 let projectNumber2=0;
 export default function AddFxAction() {
   const id=useSelector(selectCurrentProject).id;
-  const [metric, setMetric] = React.useState("Minimize");
+  const [metric, setMetric] = React.useState("increase");
   const navigate= useNavigate();
   const handleChangeMetric = (event) => {
     setMetric(event.target.value);
@@ -57,43 +60,26 @@ const ref="/Projects/"+id+"/Functions";
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const params={
-      name: data.get('name'),
-      function: functionList[projectNumber].name,
-      metric: metric,
+      
+      function: selectItem,
+      function2: selectItem2,
+      operator: metric,
+      
 
   };
   
-  CreateVariable(data.get('name'), "Problems", params, id);
+  CreateVariableTempFxState("FxTempData", params, id);
     console.log(params);
-   navigate("/dashboard");
+   navigate("/newaction");
     
   };
   const handleChangeMultiple = (event) => {
     event.preventDefault();
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-        projectNumber=i;
-      }
-    }
-    setSelectItem(value); 
-   
+    setSelectItem(event.target.value);
   };
 
   const handleChangeMultiple2 = (event) => {
-    event.preventDefault();
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-        projectNumber2=i;
-      }
-    }
-    setSelectItem2(value); 
-   
+    setSelectItem2(event.target.value);
   };
 
   return (
@@ -119,7 +105,7 @@ const ref="/Projects/"+id+"/Functions";
           <InputLabel id="demo-simple-select-label">Function 1</InputLabel>
           <Select
           
-              native
+              
               fullWidth
               value={selectItem}
               onChange={handleChangeMultiple}
@@ -128,9 +114,7 @@ const ref="/Projects/"+id+"/Functions";
               }}
             >
               {functionList.map((name) => (
-                <option key={name.name} value={name.name}>
-                  {name.name}
-                </option>
+                <MenuItem value={name.name}>{name.name}</MenuItem>
               ))}
         </Select>
             
@@ -145,9 +129,9 @@ const ref="/Projects/"+id+"/Functions";
               autoFocus
               onChange={handleChangeMetric}
             >
-              <MenuItem value={"assing"}>Assign</MenuItem>
-              <MenuItem value={"increase"}>Increase</MenuItem>
-              <MenuItem value={"decrease"}>Decrease</MenuItem>
+              <MenuItem value={"increase"}>{"increase"}</MenuItem>
+              <MenuItem value={"assign"}>{"assign"}</MenuItem>
+              <MenuItem value={"decrease"}>{"decrease"}</MenuItem>
             
               
               
@@ -156,7 +140,7 @@ const ref="/Projects/"+id+"/Functions";
             <InputLabel id="demo-simple-select-label">Function 2</InputLabel>
           <Select
           
-              native
+              
               fullWidth
               value={selectItem2}
               onChange={handleChangeMultiple2}
@@ -164,10 +148,8 @@ const ref="/Projects/"+id+"/Functions";
                 id: 'select-multiple-native2',
               }}
             >
-              {functionList2.map((name) => (
-                <option key={name.name} value={name.name}>
-                  {name.name}
-                </option>
+              {functionList.map((name) => (
+                <MenuItem value={name.name}>{name.name}</MenuItem>
               ))}
         </Select>
 

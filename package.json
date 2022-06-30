@@ -23,6 +23,9 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-swipeable-views": "^0.14.0",
+    "react-xml-parser": "^1.1.8",
+    "to-xml": "^0.1.7",
+    "use-state-if-mounted": "^1.0.7",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4"
   },

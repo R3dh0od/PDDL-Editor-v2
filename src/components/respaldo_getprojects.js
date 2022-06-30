@@ -10,29 +10,25 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import FolderCopyOutlinedIcon from '@mui/icons-material/FolderCopyOutlined';
+import { LoadUserProjects } from './LoadUserProjects';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUserID, selectUserName, selectUserImage, setCurrentProject, selectProjectList, setProjectList } from '../../../features/userSlice';
-import { collection, query, where, getDocs, onSnapshot, QuerySnapshot } from "firebase/firestore";
-import { db } from '../../../firebase/firebaseconfig';
+import { selectUserID, selectUserName, selectUserImage, setCurrentProject } from '../features/userSlice';
 
 
 const theme = createTheme();
 
 let aux=0;
 
-
-
+let projectData=[];
+let projectList=[];
 let projectIDList=[];
-
-  /*
-  .then((result)=>{
+  LoadUserProjects().then((result)=>{
     projectData.push(result);
     for (var i=0; i<projectData[0].length; i++){
       projectList.push(projectData[0][i].ProjectName);
       projectIDList.push(projectData[0][i].id);
     }
   });
-  */
 let projectNumber=0;
 export default function LoadProjects() {
   
@@ -41,42 +37,8 @@ export default function LoadProjects() {
   const uid= useSelector(selectUserID);
   const name= useSelector(selectUserName);
   const image= useSelector(selectUserImage);
-  const projectList= useSelector(selectProjectList);
+  
   const [projectName, setProjectName] = React.useState([]);
-
-  const [selectItem, setSelectItem] = React.useState([]);
-  const q = query(collection(db, "Projects"));
-  
-  /*
-  const querySnapshot = getDocs(q);
-  querySnapshot.forEach((doc) => {
-      projectData.push(doc.data());
-    // doc.data() is never undefined for query doc snapshots
-    //console.log(doc.id, " => ", doc.data());
-    console.log(projectData);
-  });
-  return(
-    projectData
-  )
-  */
- const projects=[];
- const projectListNames=[];
-  const data2 = onSnapshot(q,(querySnapshot)=>{
-    
-    querySnapshot.forEach((doc)=>{
-      projects.push(doc.data());
-      
-    })
-    //console.log(projects);
-    
-    setProjectName(projects);
-   
-   
-    
-  })
-  
- 
-
   const handleChangeMultiple = (event) => {
     event.preventDefault();
     const { options } = event.target;
@@ -87,9 +49,8 @@ export default function LoadProjects() {
         projectNumber=i;
       }
     }
-    setSelectItem(value); 
-    console.log(projectNumber); 
-    console.log(selectItem);  
+    setProjectName(value); 
+    console.log(projectNumber);   
   };
   const handleClick=(event)=>{
     event.preventDefault();
@@ -97,9 +58,9 @@ export default function LoadProjects() {
       userName: name,
       userUid: uid,
       userImage: image,
-      currentProject: {id: projectName[projectNumber].id, projectName: projectName[projectNumber].ProjectName},
+      currentProject: {id: projectIDList[projectNumber], projectName: projectList[projectNumber]},
     }))
-    console.log(projectName, projectNumber);
+    console.log(projectIDList[projectNumber], projectNumber);
     navigate("/dashboard");
   }
 
@@ -127,10 +88,9 @@ export default function LoadProjects() {
        
         
         <Select
-          
+          multiple
           native
-          fullWidth
-          value={selectItem}
+          value={projectName}
           // @ts-ignore Typings are not considering `native`
           onChange={handleChangeMultiple}
           
@@ -138,9 +98,9 @@ export default function LoadProjects() {
             id: 'select-multiple-native',
           }}
         >
-          {projectName.map((name) => (
-            <option key={name.id} value={name.id}>
-              {name.ProjectName}
+          {projectIDList.map((name) => (
+            <option key={name} value={name}>
+              {name}
             </option>
           ))}
         </Select>
@@ -152,17 +112,6 @@ export default function LoadProjects() {
               onClick={handleClick}
             >
               Load
-            </Button>
-
-            <Button
-              color='secondary'
-              onClick={()=>{navigate("/projects");}}
-              fullWidth
-              variant="contained"
-              sx={{ mt: 0, mb: 2 }}
-              
-            >
-              Cancel
             </Button>
       </FormControl>
             

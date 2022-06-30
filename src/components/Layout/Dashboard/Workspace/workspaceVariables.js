@@ -22,7 +22,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 0 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -58,16 +58,16 @@ export default function FullWidthTabs() {
   };
 
   return (
-    <Box sx={{ bgcolor: 'background.paper', width: 1}}>
+    <Box sx={{ bgcolor: 'background.paper', width:1}}>
       <AppBar position="static">
         <Tabs
           value={value}
           onChange={handleChange}
           indicatorColor="secondary"
           textColor="inherit"
-          variant="fullWidth"
+          variant="scrollable"
           aria-label="full width tabs example"
-          centered
+          //centered
         >
           <Tab label="Types" {...a11yProps(0)} />
           <Tab label="Predicates" {...a11yProps(1)} />

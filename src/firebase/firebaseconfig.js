@@ -4,12 +4,13 @@ import {getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
 
 //credenciales para el proyecto en firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyAdEEhesO3j_ZB_c4Zkn0FEYz4ZoPmnyyk",
-  authDomain: "pddl-editor.firebaseapp.com",
-  projectId: "pddl-editor",
-  storageBucket: "pddl-editor.appspot.com",
-  messagingSenderId: "4257753924",
-  appId: "1:4257753924:web:5bd1ff7ef20e9e4ae94511"
+  apiKey: "AIzaSyDObzS7K7Bb56hTFrJ6NxISL77Dp6-_ifc",
+  authDomain: "uc3m-inf-plg-pddleditor.firebaseapp.com",
+  databaseURL: "https://uc3m-inf-plg-pddleditor-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "uc3m-inf-plg-pddleditor",
+  storageBucket: "uc3m-inf-plg-pddleditor.appspot.com",
+  messagingSenderId: "849304006423",
+  appId: "1:849304006423:web:0fdcacc0d28b5190a3d152"
 };
 
 // Initialize Firebase

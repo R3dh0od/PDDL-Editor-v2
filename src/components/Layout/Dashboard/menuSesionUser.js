@@ -7,13 +7,14 @@ import { IconButton } from '@mui/material';
 import { ListItemIcon } from '@mui/material';
 import { Logout } from '@mui/icons-material';
 import FolderSharedIcon from '@mui/icons-material/FolderShared';
-import {useSelector} from 'react-redux'
-import { selectUserImage } from '../../../features/userSlice';
+import {useDispatch, useSelector} from 'react-redux'
+import { selectUserImage, setUserLogOutState } from '../../../features/userSlice';
 import { useNavigate } from 'react-router-dom';
 
 
 export default function BasicMenu() {
   const navigate= useNavigate();
+  const dispatch= useDispatch();
   const handleProjects = (event) => {
     event.preventDefault();
     
@@ -30,8 +31,18 @@ export default function BasicMenu() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+    
   };
 
+  const handleLogOut=(event)=>{
+    event.preventDefault();
+    dispatch(setUserLogOutState({
+      userName: {},
+          userUid: {},
+          userImage: {},
+    }));
+    navigate("/");
+  };
   return (
     <div>
       <IconButton 
@@ -58,7 +69,7 @@ export default function BasicMenu() {
             <FolderSharedIcon fontSize="medium" />
           </ListItemIcon>
           Projects</MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleLogOut}>
         <ListItemIcon>
             <Logout fontSize="medium" />
           </ListItemIcon>

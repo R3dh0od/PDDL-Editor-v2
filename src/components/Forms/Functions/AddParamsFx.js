@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentProject, selectPredParams, selectUserID, selectUserImage, selectUserName, setPredParams } from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
+import { CreateVariableTemp } from '../saveTemporalVariables';
 
 
 const theme = createTheme({
@@ -35,7 +36,7 @@ export default function AddFxParams() {
   const image= useSelector(selectUserImage);
   const currentProject= useSelector(selectCurrentProject);
   let aux= useSelector(selectPredParams);
-
+  const ref2="FunctionTempData";
   const [selectItem, setSelectItem] = React.useState([]);
 
   const id=useSelector(selectCurrentProject).id;
@@ -58,12 +59,10 @@ export default function AddFxParams() {
       type: subtype[projectNumber].name,
       
   };
-    
+  
+  CreateVariableTemp(ref2, params, id);
   setForm(params);
-  console.log(params);
-  //aux.length=2;
- //aux.push(params);
-  console.log(aux);
+
   
   dispatch(setPredParams({
     userName: name,
@@ -72,7 +71,7 @@ export default function AddFxParams() {
     currentProject: currentProject,
     predParams: params,
   }))  
-  navigate("/newpredicate");
+  navigate("/newfunction");
   // navigate("/newpredicate");
     
   };
@@ -166,7 +165,7 @@ export default function AddFxParams() {
             </Button>
             <Button
               color='secondary'
-              onClick={()=>{navigate("/NewPredicate");}}
+              onClick={()=>{navigate("/Newfunction");}}
               fullWidth
               variant="contained"
               sx={{ mt: 0, mb: 2 }}
