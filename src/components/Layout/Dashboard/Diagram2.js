@@ -93,7 +93,7 @@ export default function Diagrama1() {
         initDiagram={initDiagram}
         divClassName='diagram-component'
         nodeDataArray={[
-          { key: 0, text: states[0].name},
+          //{ key: 0, text: "hola"},
         ]}
         /*linkDataArray={[
           { key: -1, from: 0, to: 1 },

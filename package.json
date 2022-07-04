@@ -16,6 +16,7 @@
     "firebase-tools": "^11.0.1",
     "gojs": "^2.2.10",
     "gojs-react": "^1.1.1",
+    "js2xmlparser": "^4.0.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.31.2",
@@ -27,7 +28,10 @@
     "to-xml": "^0.1.7",
     "use-state-if-mounted": "^1.0.7",
     "uuid": "^8.3.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "xml": "^1.0.1",
+    "xml-js": "^1.6.11",
+    "xmlbuilder": "^15.1.1"
   },
   "scripts": {
     "start": "react-scripts start",

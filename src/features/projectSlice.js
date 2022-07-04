@@ -6,7 +6,6 @@ const initialState = {
 }
 
 
-
 const projectSlice = createSlice({
   name: 'currentProject',
   initialState,
