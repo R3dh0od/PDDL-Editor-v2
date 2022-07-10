@@ -15,7 +15,7 @@ import Copyrigth from '../../Layout/copyrigth';
 import { auth, provider } from '../../../firebase/firebaseconfig';
 import { signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import XMLGenerator from '../../exportXML';
+import XMLGenerator from '../../XML/exportXML';
 
 const theme = createTheme();
 

@@ -17,6 +17,8 @@
     "gojs": "^2.2.10",
     "gojs-react": "^1.1.1",
     "js2xmlparser": "^4.0.2",
+    "jstoxml": "^3.2.3",
+    "object-to-xml": "^2.0.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-hook-form": "^7.31.2",

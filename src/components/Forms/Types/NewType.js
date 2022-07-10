@@ -17,7 +17,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentProject } from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
-import XMLGenerator from '../../exportXML';
+import XMLGenerator from '../../XML/exportXML';
 
 
 const theme = createTheme({
