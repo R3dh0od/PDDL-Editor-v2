@@ -21,7 +21,7 @@ import exportXML from "../../XML/exportXML";
 const theme = createTheme();
 
 export default function SignIn() {
-    exportXML();
+
     const navigate= useNavigate();
     const dispatch=useDispatch();
     const handleSignIn = async (event) => {

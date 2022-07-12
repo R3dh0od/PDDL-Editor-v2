@@ -1,6 +1,6 @@
 
-export default function ExportXML(){
-    const aux=['ho6la', 'hola2', 'peppa', 'liorch'];
+export default function ExportXMLTypes(aux){
+
 
     var builder = require('xmlbuilder');
 
@@ -8,10 +8,12 @@ export default function ExportXML(){
 
     aux.map(value => {
         var item = root.ele('type');
-        item.att('name', value);
-        item.att('subtype', value);
+        item.att('name', value[0]);
+        item.att('subtype', value[1]);
         }
     )
+
+
     /*
     for(var i = 0; i < aux.length; i++)
     {
@@ -21,5 +23,6 @@ export default function ExportXML(){
     }*/
 
     var xml = root.end({ pretty: true, allowEmpty: true});
-    console.log(xml);
+    let result = xml.replace("<?xml version=\"1.0\"?>", "").slice(1);
+    console.log(result);
 }
