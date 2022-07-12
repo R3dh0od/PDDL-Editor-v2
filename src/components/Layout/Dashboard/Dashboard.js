@@ -19,6 +19,7 @@ import FullWidthTabs from './Workspace/workspaceVariables';
 import Copyrigth from '../copyrigth';
 //import Diagrama from './Diagram';
 import Diagrama1 from './Diagram2';
+import ExportButton from "../../XML/ExportButton";
 
 
 const drawerWidth = 240;
@@ -118,6 +119,10 @@ function DashboardContent() {
             >
               Editor
             </Typography>
+
+            <ExportButton/>
+
+
             <BasicMenu />
           </Toolbar>
         </AppBar>

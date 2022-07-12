@@ -18,6 +18,7 @@ import { selectCurrentProject } from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import XMLGenerator from '../../XML/exportXML';
+import GetDataFromDB from "../../../firebase/getDataFromDB";
 
 
 const theme = createTheme({
@@ -30,8 +31,6 @@ const theme = createTheme({
 let projectNumber=0;
 export default function NewType() {
 
-  
-  
   const [selectItem, setSelectItem] = React.useState([]);
 
   const id=useSelector(selectCurrentProject).id;

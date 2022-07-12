@@ -15,12 +15,13 @@ import Copyrigth from '../../Layout/copyrigth';
 import { auth, provider } from '../../../firebase/firebaseconfig';
 import { signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import XMLGenerator from '../../XML/exportXML';
+import exportXML from "../../XML/exportXML";
+
 
 const theme = createTheme();
 
 export default function SignIn() {
-   XMLGenerator();
+    exportXML();
     const navigate= useNavigate();
     const dispatch=useDispatch();
     const handleSignIn = async (event) => {

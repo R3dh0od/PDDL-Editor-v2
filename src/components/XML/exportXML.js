@@ -1,28 +1,25 @@
-import { toXML } from 'jstoxml';
 
-export default function XMLGenerator(){
+export default function ExportXML(){
+    const aux=['ho6la', 'hola2', 'peppa', 'liorch'];
 
-    const type=['hola','hola2'];
-// toXML(content, config)
-    const content = GenerateTypes(type);
-    const config = {
-        indent: '    '
-    };
+    var builder = require('xmlbuilder');
 
-    console.log(toXML(content, config))
-    //console.log(xml.getElementsByTagName('Name'));
- /*   var xml = builder.create('all-types')
+    var root = builder.create('all-types');
 
-    var feedObj = {
-        'all-types': {
+    aux.map(value => {
+        var item = root.ele('type');
+        item.att('name', value);
+        item.att('subtype', value);
+        }
+    )
+    /*
+    for(var i = 0; i < aux.length; i++)
+    {
+        var item = root.ele('type');
+        item.att('name', aux[i]);
+        item.att('subtype', aux[i]);
+    }*/
 
-            'type': { '@name': 'text', '@subtype': 'text'},
-
-
-            }
-
-    }
-
-    var feed = builder.create(feedObj, { encoding: 'utf-8' })
-    console.log(feed.end({ pretty: true }));*/
+    var xml = root.end({ pretty: true, allowEmpty: true});
+    console.log(xml);
 }
