@@ -5,8 +5,10 @@ import {useSelector} from "react-redux";
 import {selectCurrentProject} from "../../features/userSlice";
 import {collection, onSnapshot, query} from "firebase/firestore";
 import {db} from "../../firebase/firebaseconfig";
-import {useState} from "react";
-import ExportXMLTypes from "./exportXML";
+import {useEffect, useState} from "react";
+import ExportXMLTypes from "./exportXMLTypes";
+import ExportXMLPreds from "./exportXMLPreds";
+import ExportXMLFunctions from "./exportXMLFunctions";
 
 export default function ExportButton(){
     const id=[
@@ -36,54 +38,57 @@ export default function ExportButton(){
     const projectStates =[];
     const projectActions =[];
     const projectProblems =[];
-    const types=[];
-    const preds=[];
-    const functions=[];
-    const states=[];
-    const actions=[];
-    const problems=[];
+    let types=[];
+    let preds=[];
+    let functions=[];
+    let states=[];
+    let actions=[];
+    let problems=[];
     const [projectTypeData, setProjectTypeData] = useState([]);
     const [projectPredData, setProjectPredData] = useState([]);
     const [projectFxData, setProjectFxData] = useState([]);
     const [projectStateData, setProjectStateData] = useState([]);
     const [projectActionData, setProjectActionData] = useState([]);
     const [projectProblemData, setProjectProblemData] = useState([]);
-    onSnapshot(q,(querySnapshot)=>{
-        querySnapshot.forEach((doc)=>{
-            projectTypes.push(doc.data());
+    useEffect(()=>{
+        onSnapshot(q,(querySnapshot)=>{
+            querySnapshot.forEach((doc)=>{
+                projectTypes.push(doc.data());
+            })
+            setProjectTypeData(projectTypes);
         })
-        setProjectTypeData(projectTypes);
-    })
-    onSnapshot(q2,(querySnapshot)=>{
-        querySnapshot.forEach((doc)=>{
-            projectPreds.push(doc.data());
+        onSnapshot(q2,(querySnapshot)=>{
+            querySnapshot.forEach((doc)=>{
+                projectPreds.push(doc.data());
+            })
+            setProjectPredData(projectPreds);
         })
-        setProjectPredData(projectPreds);
-    })
-    onSnapshot(q3,(querySnapshot)=>{
-        querySnapshot.forEach((doc)=>{
-            projectFx.push(doc.data());
+        onSnapshot(q3,(querySnapshot)=>{
+            querySnapshot.forEach((doc)=>{
+                projectFx.push(doc.data());
+            })
+            setProjectFxData(projectFx);
         })
-        setProjectFxData(projectFx);
-    })
-    onSnapshot(q4,(querySnapshot)=>{
-        querySnapshot.forEach((doc)=>{
-            projectStates.push(doc.data());
+        onSnapshot(q4,(querySnapshot)=>{
+            querySnapshot.forEach((doc)=>{
+                projectStates.push(doc.data());
+            })
+            setProjectStateData(projectStates);
         })
-        setProjectStateData(projectStates);
-    })
-    onSnapshot(q5,(querySnapshot)=>{
-        querySnapshot.forEach((doc)=>{
-            projectActions.push(doc.data());
+        onSnapshot(q5,(querySnapshot)=>{
+            querySnapshot.forEach((doc)=>{
+                projectActions.push(doc.data());
+            })
+            setProjectActionData(projectActions);
         })
-        setProjectActionData(projectActions);
-    })
-    onSnapshot(q6,(querySnapshot)=>{
-        querySnapshot.forEach((doc)=>{
-            projectProblems.push(doc.data());
+        onSnapshot(q6,(querySnapshot)=>{
+            querySnapshot.forEach((doc)=>{
+                projectProblems.push(doc.data());
+            })
+            setProjectProblemData(projectProblems);
         })
-        setProjectProblemData(projectProblems);
-    })
+
+    },[]);
 
 
     const HandleClick=(e)=>{
@@ -91,7 +96,39 @@ export default function ExportButton(){
         for(let i=1; i<projectTypeData.length; i++){
             types.push([projectTypeData[i].name, projectTypeData[i].subtypeOf]);
         }
+        for(let i=0; i<projectPredData.length; i++){
+            preds.push([
+                projectPredData[i].name,
+                projectPredData[i].persistent,
+                projectPredData[i].static,
+                projectPredData[i].dynamic,
+                projectPredData[i].internal,
+                projectPredData[i].sensed,
+                projectPredData[i].Params,
+            ]);
+        }
+        for(let i=0; i<projectFxData.length; i++){
+            functions.push([
+                projectFxData[i].name,
+                projectFxData[i].persistent,
+                projectFxData[i].static,
+                projectFxData[i].dynamic,
+                projectFxData[i].internal,
+                projectFxData[i].sensed,
+                projectFxData[i].defaultValue,
+                projectFxData[i].Params,
+            ]);
+        }
         ExportXMLTypes(types);
+        ExportXMLPreds(preds);
+        ExportXMLFunctions(functions);
+
+        types=[];
+        preds=[];
+        functions=[];
+        states=[];
+        actions=[];
+        problems=[];
     }
 
     return(

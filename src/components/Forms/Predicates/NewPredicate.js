@@ -22,7 +22,7 @@ import { IconButton } from '@mui/material';
 
 import { useState } from 'react';
 import GutterlessList from './listParamsPred';
-import { aux2 } from '../temporalVariables';
+
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseconfig';
 import { DeleteVariableTemp } from '../DeleteVariable';
@@ -31,10 +31,15 @@ import { DeleteVariableTemp } from '../DeleteVariable';
 const theme = createTheme();
 
 export default function NewPredicate() {
+
+  let staticpred=true;
+  let dynamic=false;
+  let internal=true;
+  let sensed=false;
+
   const navigate= useNavigate();
   const location =useLocation();
   const id=useSelector(selectCurrentProject).id;
-  
   const [parameter, setParameter]=useState([]);
   const [alignment, setAlignment] = React.useState('static');
   const [alignment2, setAlignment2] = React.useState('internal');
@@ -67,15 +72,29 @@ export default function NewPredicate() {
   
   const handleAddParameter= (event)=>{
     event.preventDefault();
-    
     navigate("/addpredparams");
-    
   }
   
   const handleChangeToggleButton = (event, newAlignment) => {
+    if(newAlignment=='static'){
+      staticpred=true;
+      dynamic=false;
+    }
+    else {
+      staticpred=false;
+      dynamic=true;
+    }
     setAlignment(newAlignment);
   };
   const handleChangeToggleButton2 = (event, newAlignment) => {
+    if(newAlignment=='internal'){
+      internal=true;
+      sensed=false;
+    }
+    else {
+      internal=false;
+      sensed=true;
+    }
     setAlignment2(newAlignment);
   };
   
@@ -83,14 +102,16 @@ export default function NewPredicate() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const params={
-      name: data.get('name'),
-      persistent: checked,
-      cat1: alignment,
-      cat2: alignment2,
-      Params: predParams,
+      'name': data.get('name'),
+      'persistent': checked,
+      'static': staticpred,
+      'dynamic': dynamic,
+      'internal': internal,
+      'sensed': sensed,
+      'Params': predParams,
   };
   CreateVariable(data.get('name'), "Predicates", params, id);
-    console.log(params);
+   // console.log(params);
     DeleteVariableTemp(ref2, predParamsID, id);
    navigate("/dashboard");
     

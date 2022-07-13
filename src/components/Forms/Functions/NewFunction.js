@@ -26,6 +26,12 @@ import { db } from '../../../firebase/firebaseconfig';
 const theme = createTheme();
 
 export default function NewFunction() {
+
+  let staticpred=true;
+  let dynamic=false;
+  let internal=true;
+  let sensed=false;
+
   const id=useSelector(selectCurrentProject).id;
   const [alignment, setAlignment] = React.useState('static');
   const [alignment2, setAlignment2] = React.useState('internal');
@@ -57,9 +63,25 @@ export default function NewFunction() {
   
 
   const handleChangeToggleButton = (event, newAlignment) => {
+    if(newAlignment=='static'){
+      staticpred=true;
+      dynamic=false;
+    }
+    else {
+      staticpred=false;
+      dynamic=true;
+    }
     setAlignment(newAlignment);
   };
   const handleChangeToggleButton2 = (event, newAlignment) => {
+    if(newAlignment=='static'){
+      staticpred=true;
+      dynamic=false;
+    }
+    else {
+      staticpred=false;
+      dynamic=true;
+    }
     setAlignment2(newAlignment);
   };
   const handleAddParameter= (event)=>{
@@ -73,12 +95,14 @@ export default function NewFunction() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const params={
-      name: data.get('name'),
-      defaultValue: data.get('defaultValue'),
-      persistent: checked,
-      cat1: alignment,
-      cat2: alignment2,
-      Params: FxParams,
+      'name': data.get('name'),
+      'defaultValue': data.get('defaultValue'),
+      'persistent': checked,
+      'static': staticpred,
+      'dynamic': dynamic,
+      'internal': internal,
+      'sensed': sensed,
+      'Params': FxParams,
   };
   CreateVariable(data.get('name'), "Functions", params, id);
     console.log(params);
