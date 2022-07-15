@@ -9,6 +9,8 @@ import {useEffect, useState} from "react";
 import ExportXMLTypes from "./exportXMLTypes";
 import ExportXMLPreds from "./exportXMLPreds";
 import ExportXMLFunctions from "./exportXMLFunctions";
+import ExportXMLStates from "./exportXMLStates";
+import ExportXMLActions from "./exportXMLActions";
 
 export default function ExportButton(){
     const id=[
@@ -119,9 +121,29 @@ export default function ExportButton(){
                 projectFxData[i].Params,
             ]);
         }
+        for(let i=0; i<projectStateData.length; i++){
+            states.push([
+                projectStateData[i].name,
+                projectStateData[i].checkpoint,
+                projectStateData[i].predParams,
+                projectStateData[i].functionParams,
+            ]);
+        }
+        for(let i=0; i<projectActionData.length; i++){
+            actions.push([
+                projectActionData[i].name,
+                projectActionData[i].InitialState,
+                projectActionData[i].EndState,
+                projectActionData[i].EndOfLoop,
+                projectActionData[i].ParamsPred,
+                projectActionData[i].ParamsFx,
+            ]);
+        }
         ExportXMLTypes(types);
         ExportXMLPreds(preds);
         ExportXMLFunctions(functions);
+        ExportXMLStates(states);
+        ExportXMLActions(actions);
 
         types=[];
         preds=[];

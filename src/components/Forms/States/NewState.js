@@ -81,10 +81,10 @@ export default function NewState() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const params={
-      name: data.get('name'),
-      checkpoint: checked,
-      predParams: predParams,
-      functionParams: fxParams,
+      'name': data.get('name'),
+      'checkpoint': checked,
+      'predParams': predParams,
+      'functionParams': fxParams,
   };
   CreateVariable(data.get('name'), "States", params, id);
   DeleteVariableTemp(ref2, predParamsID, id);

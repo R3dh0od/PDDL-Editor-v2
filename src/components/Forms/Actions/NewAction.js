@@ -140,6 +140,7 @@ export default function NewAction() {
       name: data.get('name'),
       InitialState: stateList[projectNumber].name,
       EndState: stateList2[projectNumber2].name,
+      'EndOfLoop': checked,
       ParamsPred: predParams,
       ParamsFx: fxParams,
   };
