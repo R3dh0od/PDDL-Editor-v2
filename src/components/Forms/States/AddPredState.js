@@ -20,6 +20,7 @@ import { collection, query, onSnapshot } from 'firebase/firestore';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { CreateVariableTemp } from '../saveTemporalVariables';
 import { CreateVariableTempPredState } from './tempData';
+import {useEffect, useState} from "react";
 
 
 const theme = createTheme({
@@ -30,6 +31,7 @@ const theme = createTheme({
 
 
 let projectNumber=0;
+
 export default function AddPredState() {
  
   const ref2="PredicateTempData";
@@ -39,26 +41,43 @@ export default function AddPredState() {
   const q = query(collection(db, ref));
   
   const [form, setForm]=React.useState([]);
-  
+  const [form2, setForm2]=React.useState([]);
+  const [extraParam, setExtraParam]=useState(0);
+  const [subtype, setSubtype] = React.useState();
+
   const navigate= useNavigate();
 
   const projects=[];
   const projectListNames=[];
-  const data2 = onSnapshot(q,(querySnapshot)=>{
-   
-   querySnapshot.forEach((doc)=>{
-     projects.push(doc.data());
-   })
-   //console.log(projects);
-   setForm(projects);
-   
- })
 
- const [subtype, setSubtype] = React.useState();
+
+  useEffect(()=>{
+      onSnapshot(q,(querySnapshot)=>{
+
+          querySnapshot.forEach((doc)=>{
+              projects.push(doc.data());
+          })
+          //console.log(projects);
+          setForm(projects);
+
+      })
+  },[]);
+
+
+
 
   const handleChangeSubtype = (event) => {
     event.preventDefault();
-    setSubtype(event.target.value);
+    const temporalData=event.target.value;
+    setSubtype(temporalData);
+    form.map((value, index)=>{
+      if(temporalData==value.name){
+        console.log(index, temporalData);
+        setExtraParam(index);
+        setForm2(value.Params);
+      }
+
+    })
   };
   const handleCreate = (event) => {
     event.preventDefault();
@@ -117,11 +136,24 @@ export default function AddPredState() {
                 id: 'select-multiple-native',
               }}
             >
-              {form.map((name) => (
+              {form.map((name, index) => (
                 <MenuItem value={name.name}>{name.name}</MenuItem>
               ))}
             </Select>
-
+          <Box>
+            {form2.map((value, index)=>(
+              <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="name"
+                  label="Name"
+                  name="name"
+                  autoComplete="name"
+                  autoFocus
+              />
+            ))}
+          </Box>
             <Button
               type="submit"
               fullWidth
