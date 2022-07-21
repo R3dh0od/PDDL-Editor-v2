@@ -20,6 +20,8 @@ import { collection, query, onSnapshot } from 'firebase/firestore';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { CreateVariableTemp } from '../saveTemporalVariables';
 import { CreateVariableTempPredAction } from './saveTemporalActions';
+import {useEffect} from "react";
+import {CreateVariableTempPredState} from "../States/tempData";
 
 
 const theme = createTheme({
@@ -40,43 +42,60 @@ export default function AddPredAction() {
   
 
   const [form, setForm]=React.useState([]);
+  const [form2, setForm2]=React.useState([]);
   const [checked, setChecked] = React.useState(false);
   const [subtype, setSubtype] = React.useState([]);
   const navigate= useNavigate();
-  
-  const handleChangeSubtype = (event) => {
-    event.preventDefault();
-    setSubtype(event.target.value);
-  };
 
-  const projects=[];
-  const projectListNames=[];
- const data2 = onSnapshot(q,(querySnapshot)=>{
-   
-   querySnapshot.forEach((doc)=>{
-     projects.push(doc.data());
-   })
-   //console.log(projects);
-   setForm(projects);
 
- })
+    const projects=[];
+    const additionalParams=[];
+    const additionalParams2=[];
+ useEffect(()=>{
+     onSnapshot(q,(querySnapshot)=>{
 
-  
-  const handleCreate = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const params={
-      not: checked,
-      predicate: subtype,
-  };
-    console.log(params);
-  CreateVariableTempPredAction(ref2, params, id);
- 
+         querySnapshot.forEach((doc)=>{
+             projects.push(doc.data());
+         })
+         //console.log(projects);
+         setForm(projects);
 
-  navigate("/newaction");
-  // navigate("/newpredicate");
-    
-  };
+     })
+ },[]);
+
+
+    const handleChangeSubtype = (event) => {
+        event.preventDefault();
+        const temporalData=event.target.value;
+        setSubtype(temporalData);
+        form.map((value)=>{
+            if(temporalData==value.name){
+                setForm2(value.Params);
+            }
+
+        })
+    };
+    const handleCreate = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+
+        form2.map((value)=>(
+            additionalParams.push(value),
+                additionalParams2.push({variable: data.get(value.name)})
+        ))
+
+        const params={
+            not: checked,
+            params: additionalParams,
+            variables: additionalParams2,
+            predicate: subtype,
+
+        };
+
+        CreateVariableTempPredState(ref2, params, id);
+        navigate("/newaction");
+
+    };
   
   
 
@@ -124,6 +143,20 @@ export default function AddPredAction() {
                 <MenuItem value={name.name}>{name.name}</MenuItem>
               ))}
             </Select>
+              <Box>
+                  {form2.map((value)=>(
+                      <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          id={value.name}
+                          label={'Variable name ('+value.name+'/'+value.type+')'}
+                          name={value.name}
+                          autoComplete="name"
+                          autoFocus
+                      />
+                  ))}
+              </Box>
 
             <Button
               type="submit"

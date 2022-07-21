@@ -24,6 +24,7 @@ import GutterlessList from '../Predicates/listParamsPred';
 import { DeleteVariableTemp } from '../DeleteVariable';
 import GutterlessListpredAction from './listActionpreds';
 import GutterlessListFxState from '../States/listFxStates';
+import {useEffect} from "react";
 
 
 const theme = createTheme();
@@ -34,7 +35,6 @@ export default function NewAction() {
   const id=useSelector(selectCurrentProject).id;
   const [stateList, setStateList] = React.useState([]);
   const [stateList2, setStateList2] = React.useState([]);
-  const [metric, setMetric] = React.useState("Minimize");
   const [checked, setChecked] = React.useState(false);
   const [selectItem, setSelectItem] = React.useState([]);
   const [selectItem2, setSelectItem2] = React.useState([]);
@@ -68,17 +68,30 @@ export default function NewAction() {
 
   const projects2=[];
     const projectListNames2=[];
-   const data2 = onSnapshot(q3,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       projects2.push(doc.data());
-       projectListNames2.push(doc.id);
-     })
-     //console.log(projects);
-     setFxParams(projects2);
-     setFxParamsID(projectListNames2);
 
-   })
+    useEffect(()=>{
+      onSnapshot(q3,(querySnapshot)=>{
+
+        querySnapshot.forEach((doc)=>{
+          projects2.push(doc.data());
+          projectListNames2.push(doc.id);
+        })
+        //console.log(projects);
+        setFxParams(projects2);
+        setFxParamsID(projectListNames2);
+
+      });
+          onSnapshot(q,(querySnapshot)=>{
+
+            querySnapshot.forEach((doc)=>{
+              states.push(doc.data());
+            })
+            //console.log(projects);
+            setStateList(states);
+            setStateList2(states);
+          });
+    },[])
+
   
   
 
@@ -87,16 +100,6 @@ export default function NewAction() {
   const ref="/Projects/"+id+"/States";
   const q = query(collection(db, ref));
   const states=[];
-    
-   const data4 = onSnapshot(q,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       states.push(doc.data());
-     })
-     //console.log(projects);
-     setStateList(states);
-     setStateList2(states);
-   })
 
   const handleChangeCheck = (event) => {
     setChecked(event.target.checked);

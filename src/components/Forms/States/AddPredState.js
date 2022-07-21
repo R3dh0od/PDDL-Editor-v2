@@ -21,6 +21,7 @@ import { Checkbox, FormControlLabel } from '@mui/material';
 import { CreateVariableTemp } from '../saveTemporalVariables';
 import { CreateVariableTempPredState } from './tempData';
 import {useEffect, useState} from "react";
+import {value} from "firebase-tools/lib/deploymentTool";
 
 
 const theme = createTheme({
@@ -42,13 +43,13 @@ export default function AddPredState() {
   
   const [form, setForm]=React.useState([]);
   const [form2, setForm2]=React.useState([]);
-  const [extraParam, setExtraParam]=useState(0);
   const [subtype, setSubtype] = React.useState();
 
   const navigate= useNavigate();
 
   const projects=[];
-  const projectListNames=[];
+  const additionalParams=[];
+  const additionalParams2=[];
 
 
   useEffect(()=>{
@@ -70,10 +71,8 @@ export default function AddPredState() {
     event.preventDefault();
     const temporalData=event.target.value;
     setSubtype(temporalData);
-    form.map((value, index)=>{
+    form.map((value)=>{
       if(temporalData==value.name){
-        console.log(index, temporalData);
-        setExtraParam(index);
         setForm2(value.Params);
       }
 
@@ -82,15 +81,20 @@ export default function AddPredState() {
   const handleCreate = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
+  form2.map((value)=>(
+      additionalParams.push(value),
+      additionalParams2.push({variable: data.get(value.name)})
+  ))
+
     const params={
       not: checked,
-
+      params: additionalParams,
+      variables: additionalParams2,
       predicate: subtype,
-      
-  };
-    
-  
-  console.log(params);
+
+    };
+
   CreateVariableTempPredState(ref2, params, id);
   navigate("/newstate");
 
@@ -137,18 +141,18 @@ export default function AddPredState() {
               }}
             >
               {form.map((name, index) => (
-                <MenuItem value={name.name}>{name.name}</MenuItem>
+                <MenuItem fullWidth value={name.name}>{name.name}</MenuItem>
               ))}
             </Select>
           <Box>
-            {form2.map((value, index)=>(
+            {form2.map((value)=>(
               <TextField
                   margin="normal"
                   required
                   fullWidth
-                  id="name"
-                  label="Name"
-                  name="name"
+                  id={value.name}
+                  label={'Variable name ('+value.name+'/'+value.type+')'}
+                  name={value.name}
                   autoComplete="name"
                   autoFocus
               />

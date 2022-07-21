@@ -19,6 +19,7 @@ import { db } from '../../../firebase/firebaseconfig';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { CreateVariableTemp } from '../saveTemporalVariables';
 import { CreateVariableTempFxState } from './tempDatafxState';
+import {useEffect} from "react";
 
 
 const theme = createTheme({
@@ -39,46 +40,80 @@ export default function AddFxState() {
 //conexion a db para obtener listado de funciones
 const [functionList, setFunctionList] = React.useState([]);
 const [functionList2, setFunctionList2] = React.useState([]);
+const [functionParams, setFunctionParams] = React.useState([]);
+const [functionParams2, setFunctionParams2] = React.useState([]);
 const [selectItem, setSelectItem] = React.useState([]);
 const [selectItem2, setSelectItem2] = React.useState([]);
 const ref="/Projects/"+id+"/Functions";
-  const q = query(collection(db, ref));
-  const functions=[];
-    
-   const data2 = onSnapshot(q,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       functions.push(doc.data());
-     })
-     //console.log(projects);
-     setFunctionList(functions);
-     setFunctionList2(functions);
-   })
+const q = query(collection(db, ref));
+const functions=[];
+const additionalParams=[];
+const additionalParams2=[];
+const additionalParams3=[];
+const additionalParams4=[];
+
+
+useEffect(()=>{
+    onSnapshot(q,(querySnapshot)=>{
+
+        querySnapshot.forEach((doc)=>{
+            functions.push(doc.data());
+        })
+        //console.log(projects);
+        setFunctionList(functions);
+        setFunctionList2(functions);
+    })
+},[]);
 
   const handleCreate = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    functionParams.map((value)=>(
+        additionalParams.push(value),
+        additionalParams2.push({variable: data.get(value.name)})
+    ))
+      functionParams2.map((value)=>(
+          additionalParams3.push(value),
+              additionalParams4.push({variable: data.get(value.name)})
+      ))
     const params={
       
-      function: selectItem,
-      function2: selectItem2,
-      operator: metric,
+      'function': selectItem,
+        'fParams': additionalParams,
+        'fVariables': additionalParams2,
+        'f2Params': additionalParams3,
+        'f2Variables': additionalParams4,
+      'function2': selectItem2,
+      'operator': metric,
       
 
   };
   
   CreateVariableTempFxState("FxTempData", params, id);
-    console.log(params);
+
    navigate("/newstate");
     
   };
   const handleChangeMultiple = (event) => {
     event.preventDefault();
+    const temporalData=event.target.value;
     setSelectItem(event.target.value);
+      functionList.map((value)=>{
+          if(temporalData==value.name){
+              setFunctionParams(value.Params);
+          }
+      })
   };
 
   const handleChangeMultiple2 = (event) => {
+    event.preventDefault();
+    const temporalData=event.target.value;
     setSelectItem2(event.target.value);
+      functionList.map((value)=>{
+          if(temporalData==value.name){
+              setFunctionParams2(value.Params);
+          }
+      })
   };
 
   return (
@@ -116,7 +151,20 @@ const ref="/Projects/"+id+"/Functions";
                 <MenuItem value={name.name}>{name.name}</MenuItem>
               ))}
         </Select>
-            
+          <Box>
+              {functionParams.map((value)=>(
+                  <TextField
+                      margin="normal"
+                      required
+                      fullWidth
+                      id={value.name}
+                      label={'Variable name ('+value.name+'/'+value.type+')'}
+                      name={value.name}
+                      autoComplete="name"
+                      autoFocus
+                  />
+              ))}
+          </Box>
         <InputLabel id="demo-simple-select-label">Operator</InputLabel>
             <Select
               
@@ -153,6 +201,20 @@ const ref="/Projects/"+id+"/Functions";
                 <MenuItem value={name.name}>{name.name}</MenuItem>
               ))}
         </Select>
+              <Box>
+                  {functionParams2.map((value)=>(
+                      <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          id={value.name}
+                          label={'Variable name ('+value.name+'/'+value.type+')'}
+                          name={value.name}
+                          autoComplete="name"
+                          autoFocus
+                      />
+                  ))}
+              </Box>
 
             <Button
               type="submit"
