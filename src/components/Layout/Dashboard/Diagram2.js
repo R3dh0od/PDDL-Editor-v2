@@ -17,6 +17,25 @@ import { useStateIfMounted } from 'use-state-if-mounted';
  * This method is responsible for making the diagram and initializing the model and any templates.
  * The model's data should not be set here, as the ReactDiagram component handles that via the other props.
  */
+
+function mouseEnter(e, obj) {
+    var shape = obj.findObject("SHAPE");
+    shape.fill = "#f24333";
+    shape.stroke = "#A6E6A1";
+    var text = obj.findObject("TEXT");
+    text.stroke = "white";
+};
+
+function mouseLeave(e, obj) {
+    var shape = obj.findObject("SHAPE");
+    // Return the Shape's fill and stroke to the defaults
+    shape.fill = obj.data.color;
+    shape.stroke = null;
+    // Return the TextBlock's stroke to its default
+    var text = obj.findObject("TEXT");
+    text.stroke = "black";
+};
+
 function initDiagram() {
   const $ = go.GraphObject.make;
   // set your license key here before creating the diagram: go.Diagram.licenseKey = "...";
@@ -35,16 +54,56 @@ function initDiagram() {
   // define a simple Node template
   diagram.nodeTemplate =
     $(go.Node, 'Auto',  // the Shape will go around the TextBlock
+        {
+            mouseEnter: mouseEnter,
+            mouseLeave: mouseLeave
+        },
+        { // when the user clicks on a Node, highlight all Links coming out of the node
+            // and all of the Nodes at the other ends of those Links.
+            click: function(e, node) {
+                // highlight all Links and Nodes coming out of a given Node
+                var diagram = node.diagram;
+                diagram.startTransaction("highlight");
+                // remove any previous highlighting
+                diagram.clearHighlighteds();
+                // for each Link coming out of the Node, set Link.isHighlighted
+                node.findLinksOutOf().each(function(l) { l.isHighlighted = true; });
+                // for each Node destination for the Node, set Node.isHighlighted
+                node.findNodesOutOf().each(function(n) { n.isHighlighted = true; });
+                diagram.commitTransaction("highlight");
+            }},
       new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
       $(go.Shape, 'RoundedRectangle',
         { name: 'SHAPE', fill: 'white', strokeWidth: 0 },
         // Shape.fill is bound to Node.data.color
         new go.Binding('fill', 'color')),
       $(go.TextBlock,
-        { margin: 8, editable: true },  // some room around the text
+        { margin: 8, editable: false },  // some room around the text
         new go.Binding('text').makeTwoWay()
-      )
+      ),
     );
+
+    // define the Link template
+    diagram.linkTemplate =
+        $(go.Link,
+            { toShortLength: 4 },
+            $(go.Shape,
+                // the Shape.stroke color depends on whether Link.isHighlighted is true
+                new go.Binding("stroke", "isHighlighted", function(h) { return h ? "red" : "black"; })
+                    .ofObject(),
+                // the Shape.strokeWidth depends on whether Link.isHighlighted is true
+                new go.Binding("strokeWidth", "isHighlighted", function(h) { return h ? 3 : 1; })
+                    .ofObject()),
+            $(go.Shape,
+                { toArrow: "Standard", strokeWidth: 0 },
+                // the Shape.fill color depends on whether Link.isHighlighted is true
+                new go.Binding("fill", "isHighlighted", function(h) { return h ? "red" : "black"; })
+                    .ofObject())
+        );
+
+    diagram.click = function(e) {
+        e.diagram.commit(function(d) { d.clearHighlighteds(); }, "no highlighteds");
+    };
 
   return diagram;
 }
@@ -59,51 +118,62 @@ function handleModelChange(changes) {
 
 // render function...
 export default function Diagrama1() {
-  let isMounted;
+    const color_palette=[
+        '#b2d3a8', '#aaffe5', '#cffcff', '#ffc2e2', '#eee5e9', '#f9e900', '#f6af65', '#aeb8fe'
+    ];
+
     const id=useSelector(selectCurrentProject).id;
-    const [stateList, setStateList] = useStateIfMounted([]);
-    
+    const [stateList, setStateList] = useStateIfMounted([{}]);
+    const [actionList, setActionList] = useStateIfMounted([{}]);
+
     const ref="/Projects/"+id+"/States";
+    const ref2="/Projects/"+id+"/Actions";
     const q = query(collection(db, ref));
+    const q2 = query(collection(db, ref2));
     const states=[];
-    
-    useEffect(()=>{
-      isMounted= true;
-      onSnapshot(q,(querySnapshot)=>{
-       
-        querySnapshot.forEach((doc)=>{
-          states.push(doc.data());
+    const actions=[];
+
+    useEffect(()=> {
+        onSnapshot(q, (querySnapshot) => {
+
+            querySnapshot.forEach((doc) => {
+                states.push(doc.data());
+            })
+
+            setStateList(states);
+
         })
-        
-        setStateList(states);
-        
-      });
+        onSnapshot(q2, (querySnapshot) => {
+
+            querySnapshot.forEach((doc) => {
+                actions.push(doc.data());
+            })
+
+            setActionList(actions);
+
+        })
+
+    },[]);
     //  console.log(stateList[0].name);
-     return ()=>{
-      isMounted = false;
-     };
-    },[stateList, []]);
-      
-   
-     //console.log(stateList[0].name);
+
+    let nodeDataArray=[];
+    let linkDataArray=[];
+    stateList.map((value,index)=>(
+        nodeDataArray.push({key: value.name, text: value.name, color: color_palette[Math.floor(Math.random() * color_palette.length)]})
+    ))
+    //    [{key: 0, text: stateList[0].name}, {key: 1, text: aux[1].name}];
+    linkDataArray.push({key: -1, from: stateList[0].name, to: stateList[0].name});
+
   return (
-    
-      
+
+
       <ReactDiagram
         initDiagram={initDiagram}
         divClassName='diagram-component'
-        nodeDataArray={[
-          //{ key: 0, text: "hola"},
-        ]}
-        /*linkDataArray={[
-          { key: -1, from: 0, to: 1 },
-          { key: -2, from: 0, to: 2 },
-          { key: -3, from: 1, to: 1 },
-          { key: -4, from: 2, to: 3 },
-          { key: -5, from: 3, to: 0 }
-        ]}*/
+        nodeDataArray={nodeDataArray}
+        linkDataArray={linkDataArray}
         onModelChange={handleModelChange}
       />
-   
+
   );
-}
+  }

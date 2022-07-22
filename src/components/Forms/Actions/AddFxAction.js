@@ -63,7 +63,7 @@ const ref="/Projects/"+id+"/Functions";
            setFunctionList(functions);
            setFunctionList2(functions);
        })
-   })
+   },[]);
 
     const handleCreate = (event) => {
         event.preventDefault();
