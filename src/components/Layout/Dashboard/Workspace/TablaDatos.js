@@ -26,6 +26,8 @@ import { selectCurrentProject } from '../../../../features/userSlice';
 import { db } from '../../../../firebase/firebaseconfig';
 import { DeleteProjectDb } from './DeleteElementDB';
 import { DeleteVariableTemp } from '../../../Forms/DeleteVariable';
+import {useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 
 function createData(name) {
   return {
@@ -146,11 +148,12 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const idProject=useSelector(selectCurrentProject).id;
   const { numSelected, data, category } = props;
+  const navigate=useNavigate();
   const handleDelete=(event) => {
     event.preventDefault();
   //DeleteProjectDb(ref2,data2);}
 //console.log(numSelected, data, category);
-DeleteVariableTemp(category,data,idProject);  
+DeleteVariableTemp(category,data,idProject);
 }
   return (
     <Toolbar
@@ -211,18 +214,20 @@ export default function EnhancedTable(props) {
   const q = query(collection(db, ref));
   const projectData =[];
   const [projectVariables, setProjectVariables] = React.useState([]);
-  const data2 = onSnapshot(q,(querySnapshot)=>{
-    
-    querySnapshot.forEach((doc)=>{
-      projectData.push(doc.data());
-      
+  useEffect(()=>{
+    onSnapshot(q,(querySnapshot)=>{
+
+      querySnapshot.forEach((doc)=>{
+        projectData.push(doc.data());
+
+      })
+      //console.log(projects);
+
+      setProjectVariables(projectData);
+
+
+
     })
-    //console.log(projects);
-    
-    setProjectVariables(projectData);
-   
-   
-    
   })
   const rows=[];
 const aux2= projectVariables.map((name)=>{

@@ -3,7 +3,7 @@ import '../../../Styles/index.css';
 import * as go from 'gojs';
 import { ReactDiagram } from 'gojs-react';
 import { useSelector } from 'react-redux';
-import { selectCurrentProject } from '../../../features/userSlice';
+import {selectCurrentProject, selectSwitchDiagram} from '../../../features/userSlice';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseconfig';
 import { useStateIfMounted } from 'use-state-if-mounted';
@@ -44,7 +44,8 @@ function initDiagram() {
       {
         'undoManager.isEnabled': true,  // must be set to allow for model change listening
         // 'undoManager.maxHistoryLength': 0,  // uncomment disable undo/redo functionality
-        'clickCreatingTool.archetypeNodeData': { text: 'new node', color: 'lightblue' },
+        //'clickCreatingTool.archetypeNodeData': { text: 'new node', color: 'lightblue' },
+
         model: new go.GraphLinksModel(
           {
             linkKeyProperty: 'key'  // IMPORTANT! must be defined for merges and data sync when using GraphLinksModel
@@ -119,7 +120,9 @@ function handleModelChange(changes) {
 // render function...
 export default function Diagrama1() {
     const color_palette=[
-        '#b2d3a8', '#aaffe5', '#cffcff', '#ffc2e2', '#eee5e9', '#f9e900', '#f6af65', '#aeb8fe'
+        '#b2d3a8', '#aaffe5', '#cffcff',
+        '#ffc2e2', '#eee5e9', '#f9e900',
+        '#f6af65', '#aeb8fe'
     ];
 
     const id=useSelector(selectCurrentProject).id;
@@ -128,6 +131,7 @@ export default function Diagrama1() {
 
     const ref="/Projects/"+id+"/States";
     const ref2="/Projects/"+id+"/Actions";
+
     const q = query(collection(db, ref));
     const q2 = query(collection(db, ref2));
     const states=[];
@@ -156,13 +160,31 @@ export default function Diagrama1() {
     },[]);
     //  console.log(stateList[0].name);
 
+
     let nodeDataArray=[];
     let linkDataArray=[];
-    stateList.map((value,index)=>(
-        nodeDataArray.push({key: value.name, text: value.name, color: color_palette[Math.floor(Math.random() * color_palette.length)]})
-    ))
-    //    [{key: 0, text: stateList[0].name}, {key: 1, text: aux[1].name}];
-    linkDataArray.push({key: -1, from: stateList[0].name, to: stateList[0].name});
+
+        stateList.map((value)=>(
+            nodeDataArray.push(
+                {
+                    key: value.name,
+                    text: value.name,
+                    color: go.Brush.randomColor()
+                }
+            )
+        ))
+
+        actionList.map((value, index)=>(
+            linkDataArray.push(
+                {
+                    key: index, from: value.InitialState, to: value.EndState
+                }
+            )
+        ))
+
+
+
+
 
   return (
 

@@ -19,6 +19,7 @@ import { db } from '../../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import XMLGenerator from '../../XML/exportXMLTypes';
 import GetDataFromDB from "../../../firebase/getDataFromDB";
+import {useEffect} from "react";
 
 
 const theme = createTheme({
@@ -59,14 +60,16 @@ export default function NewType() {
 
     const projects=[];
     
-   const data2 = onSnapshot(q,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       projects.push(doc.data());
-     })
-     //console.log(projects);
-     setSubtype(projects);
-   })
+   useEffect(()=>{
+       onSnapshot(q,(querySnapshot)=>{
+
+           querySnapshot.forEach((doc)=>{
+               projects.push(doc.data());
+           })
+           //console.log(projects);
+           setSubtype(projects);
+       })
+   },[]);
 
    const handleChangeMultiple = (event) => {
     event.preventDefault();

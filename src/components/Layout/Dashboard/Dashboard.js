@@ -20,6 +20,7 @@ import Copyrigth from '../copyrigth';
 //import Diagrama from './Diagram';
 import Diagrama1 from './Diagram2';
 import ExportButton from "../../XML/ExportButton";
+import Diagrama2 from "../../Forms/Types/Hierarchy";
 
 
 const drawerWidth = 240;
@@ -172,7 +173,7 @@ function DashboardContent() {
                     height: '85vh',
                   }}
                 >
-                  <Diagrama1 />
+                  <Diagrama2 />
                 </Paper>
               </Grid>
               <Grid item xs={4}>

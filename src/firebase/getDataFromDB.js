@@ -3,6 +3,7 @@ import {useSelector} from "react-redux";
 import {selectCurrentProject} from "../features/userSlice";
 import {db} from "./firebaseconfig";
 import * as React from "react";
+import {useEffect} from "react";
 
 
 export default function GetDataFromDB([id]){
@@ -11,14 +12,17 @@ export default function GetDataFromDB([id]){
     const ref="/Projects/"+projectID.id+"/"+id;
     const q = query(collection(db, ref));
     const projectData =[];
-    const unsub = onSnapshot(q, (querySnapshot) => {
-        querySnapshot.forEach((doc)=>{
-            projectData.push(doc.data());
+    useEffect(()=>{
+        onSnapshot(q, (querySnapshot) => {
+            querySnapshot.forEach((doc)=>{
+                projectData.push(doc.data());
+
+            })
+            setProjectVariables(projectData);
 
         })
-        setProjectVariables(projectData);
+    },[]);
 
-    })
 
     console.log(projectVariables);
 }

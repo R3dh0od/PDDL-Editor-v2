@@ -39,7 +39,7 @@ export const NewProject=()=> {
         userImage: image,
         currentProject: {id: result, projectName: project},
       }))
-      CreateVariable("Object","Types",{name: "object", subtypeOf: null},result);
+      CreateVariable("Object","Types",{name: "object", subtypeOf: 'object'},result);
     });
     
    navigate("/dashboard");

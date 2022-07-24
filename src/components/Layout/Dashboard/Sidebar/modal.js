@@ -38,17 +38,21 @@ export default function BasicModal({titulo, icono, tituloModal, dir}) {
     const currentProject= useSelector(selectCurrentProject);
     const params={};
     const navigate= useNavigate();
-    const handleClick=()=>{
-      
-      dispatch(setPredParams({
-        userName: name,
-        userUid: uid,
-        userImage: image,
-        currentProject: currentProject,
-        predParams: params,
-      }))  
-        navigate(dir);
+    let handleClick;
+    if(dir!=='grafico'){
+        handleClick=()=>{
+
+            dispatch(setPredParams({
+                userName: name,
+                userUid: uid,
+                userImage: image,
+                currentProject: currentProject,
+                predParams: params,
+            }))
+            navigate(dir);
+        }
     }
+
        
   return (
     

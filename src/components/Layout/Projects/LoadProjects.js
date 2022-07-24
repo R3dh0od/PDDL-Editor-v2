@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectUserID, selectUserName, selectUserImage, setCurrentProject, selectProjectList, setProjectList } from '../../../features/userSlice';
 import { collection, query, where, getDocs, onSnapshot, QuerySnapshot } from "firebase/firestore";
 import { db } from '../../../firebase/firebaseconfig';
+import {useEffect} from "react";
 
 
 const theme = createTheme();
@@ -61,19 +62,21 @@ export default function LoadProjects() {
   */
  const projects=[];
  const projectListNames=[];
-  const data2 = onSnapshot(q,(querySnapshot)=>{
-    
-    querySnapshot.forEach((doc)=>{
-      projects.push(doc.data());
-      
-    })
-    //console.log(projects);
-    
-    setProjectName(projects);
-   
-   
-    
-  })
+  useEffect(()=>{
+      onSnapshot(q,(querySnapshot)=>{
+
+          querySnapshot.forEach((doc)=>{
+              projects.push(doc.data());
+
+          })
+          //console.log(projects);
+
+          setProjectName(projects);
+
+
+
+      })
+  },[]);
   
  
 

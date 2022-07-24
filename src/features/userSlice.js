@@ -41,6 +41,7 @@ const userSlice = createSlice({
       setAddParams:(state,action)=>{
         state.addParams=action.payload.addParams
       },
+
   }
 });
 
@@ -51,7 +52,7 @@ export const {
   setCurrentProject, 
   setProjectList, 
   setPredParams,
-  setAddParams, 
+  setAddParams,
 } = userSlice.actions
 
 export const selectUserID = state => state.user.uid
@@ -61,5 +62,6 @@ export const selectCurrentProject = state => state.user.currentProject
 export const selectProjectList = state => state.user.projectList
 export const selectPredParams = state => state.user.predParams
 export const selectAddParams= state => state.user.addParams
+
 
 export default userSlice.reducer
