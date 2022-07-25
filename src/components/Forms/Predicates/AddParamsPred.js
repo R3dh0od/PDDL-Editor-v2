@@ -19,6 +19,7 @@ import { db } from '../../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import temporalVar from '../temporalVariables';
 import { CreateVariableTemp } from '../saveTemporalVariables';
+import {useEffect} from "react";
 
 
 const theme = createTheme({
@@ -83,15 +84,17 @@ export default function AddPredParams() {
   
     const projects=[];
     const projectListNames=[];
-   const data2 = onSnapshot(q,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       projects.push(doc.data());
-     })
-     //console.log(projects);
-     setSubtype(projects);
+   useEffect(()=>{
+       onSnapshot(q,(querySnapshot)=>{
 
-   })
+           querySnapshot.forEach((doc)=>{
+               projects.push(doc.data());
+           })
+           //console.log(projects);
+           setSubtype(projects);
+
+       })
+   },[]);
 
    const handleChangeMultiple = (event) => {
     event.preventDefault();

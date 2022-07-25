@@ -20,7 +20,7 @@ import { selectCurrentProject } from '../../../features/userSlice';
 import { CreateVariable } from '../saveVariables';
 import { IconButton } from '@mui/material';
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import GutterlessList from './listParamsPred';
 
 import { collection, onSnapshot, query } from 'firebase/firestore';
@@ -44,8 +44,8 @@ export default function NewPredicate() {
   const [alignment, setAlignment] = React.useState('static');
   const [alignment2, setAlignment2] = React.useState('internal');
   const [checked, setChecked] = React.useState(false);
-  
-  
+
+
   const ref2="PredicateTempData";
   const ref3="/Projects/"+id+"/PredicateTempData";
   const q = query(collection(db, ref3));
@@ -53,18 +53,20 @@ export default function NewPredicate() {
   const [predParamsID, setPredParamsID] = React.useState([]);
 
   const projects=[];
-    const projectListNames=[];
-   const data2 = onSnapshot(q,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       projects.push(doc.data());
-       projectListNames.push(doc.id);
-     })
-     //console.log(projects);
-     setPredParams(projects);
-     setPredParamsID(projectListNames);
+  const projectListNames=[];
+  useEffect(()=>{
+    onSnapshot(q,(querySnapshot)=>{
 
-   })
+      querySnapshot.forEach((doc)=>{
+        projects.push(doc.data());
+        projectListNames.push(doc.id);
+      })
+      //console.log(projects);
+      setPredParams(projects);
+      setPredParamsID(projectListNames);
+
+    })
+  },[]);
   
   const handleChangeCheck = (event) => {
     setChecked(event.target.checked);

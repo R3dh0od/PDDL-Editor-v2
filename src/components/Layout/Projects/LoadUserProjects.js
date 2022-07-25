@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { collection, query, where, getDocs, onSnapshot, QuerySnapshot } from "firebase/firestore";
 import { db } from '../../../firebase/firebaseconfig';
 
@@ -20,15 +20,15 @@ export function LoadUserProjects(){
       projectData
     )
     */
-    const data2 = onSnapshot(q,(querySnapshot)=>{
-      const projects=[];
-      querySnapshot.forEach((doc)=>{
-        projects.push(doc.data().ProjectName);
-      })
-      console.log(projects);
-      projectData=projects;
-      console.log(projectData);
-    })
+    useEffect(()=>{
+        onSnapshot(q,(querySnapshot)=>{
+            const projects=[];
+            querySnapshot.forEach((doc)=>{
+                projects.push(doc.data().ProjectName);
+            })
+            projectData=projects;
+        })
+    },[]);
     return(
       projectData
     )

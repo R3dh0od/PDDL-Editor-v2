@@ -87,7 +87,6 @@ function initDiagram() {
     // define the Link template
     diagram.linkTemplate =
         $(go.Link,
-            { toShortLength: 4 },
             $(go.Shape,
                 // the Shape.stroke color depends on whether Link.isHighlighted is true
                 new go.Binding("stroke", "isHighlighted", function(h) { return h ? "red" : "black"; })
@@ -99,7 +98,11 @@ function initDiagram() {
                 { toArrow: "Standard", strokeWidth: 0 },
                 // the Shape.fill color depends on whether Link.isHighlighted is true
                 new go.Binding("fill", "isHighlighted", function(h) { return h ? "red" : "black"; })
-                    .ofObject())
+                    .ofObject()),
+            $(go.TextBlock,
+                { alignmentFocus: new go.Spot(1, 0.5, 3, -10) },
+                //{ segmentOffset: new go.Point(0, -10) }, // centered multi-line text
+                new go.Binding("text", "text"))
         );
 
     diagram.click = function(e) {
@@ -177,7 +180,7 @@ export default function Diagrama1() {
         actionList.map((value, index)=>(
             linkDataArray.push(
                 {
-                    key: index, from: value.InitialState, to: value.EndState
+                    key: index, from: value.InitialState, to: value.EndState, text: value.name
                 }
             )
         ))

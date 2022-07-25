@@ -220,9 +220,9 @@ export default function EnhancedTable(props) {
   const q = query(collection(db, ref));
   const projectData =[];
   const [projectVariables, setProjectVariables] = React.useState([]);
+  let data;
   useEffect(()=>{
     onSnapshot(q,(querySnapshot)=>{
-
       querySnapshot.forEach((doc)=>{
         projectData.push(doc.data());
 
@@ -234,7 +234,7 @@ export default function EnhancedTable(props) {
 
 
     })
-  })
+  },[]);
   const rows=[];
 const aux2= projectVariables.map((name)=>{
   rows.push(createData(name.name));

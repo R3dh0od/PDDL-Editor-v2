@@ -47,17 +47,19 @@ export default function NewAction() {
 
   const projects=[];
     const projectListNames=[];
-   const data3 = onSnapshot(q2,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       projects.push(doc.data());
-       projectListNames.push(doc.id);
-     })
-     //console.log(projects);
-     setPredParams(projects);
-     setPredParamsID(projectListNames);
+   useEffect(()=>{
+     onSnapshot(q2,(querySnapshot)=>{
 
-   })
+       querySnapshot.forEach((doc)=>{
+         projects.push(doc.data());
+         projectListNames.push(doc.id);
+       })
+       //console.log(projects);
+       setPredParams(projects);
+       setPredParamsID(projectListNames);
+
+     })
+   },[]);
 
 
    const ref4="FxTempData";

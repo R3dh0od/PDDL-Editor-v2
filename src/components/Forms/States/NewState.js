@@ -22,6 +22,7 @@ import { db } from '../../../firebase/firebaseconfig';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { DeleteVariableTemp } from '../DeleteVariable';
 import GutterlessListFxState from './listFxStates';
+import {useEffect} from "react";
 
 const theme = createTheme();
 
@@ -61,17 +62,19 @@ export default function NewState() {
 
   const projects=[];
     const projectListNames=[];
-   const data2 = onSnapshot(q,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       projects.push(doc.data());
-       projectListNames.push(doc.id);
-     })
-     //console.log(projects);
-     setPredParams(projects);
-     setPredParamsID(projectListNames);
+    useEffect(()=>{
+        onSnapshot(q,(querySnapshot)=>{
 
-   })
+            querySnapshot.forEach((doc)=>{
+                projects.push(doc.data());
+                projectListNames.push(doc.id);
+            })
+            //console.log(projects);
+            setPredParams(projects);
+            setPredParamsID(projectListNames);
+
+        })
+    },[]);
 
    
 

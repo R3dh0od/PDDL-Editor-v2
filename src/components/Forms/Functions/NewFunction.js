@@ -22,6 +22,7 @@ import { DeleteVariableTemp } from '../DeleteVariable';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import GutterlessList from '../Predicates/listParamsPred';
 import { db } from '../../../firebase/firebaseconfig';
+import {useEffect} from "react";
 
 const theme = createTheme();
 
@@ -44,18 +45,20 @@ export default function NewFunction() {
   const [FxParamsID, setFxParamsID] = React.useState([]);
 
   const projects=[];
-    const projectListNames=[];
-   const data2 = onSnapshot(q,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       projects.push(doc.data());
-       projectListNames.push(doc.id);
-     })
-     //console.log(projects);
-     setFxParams(projects);
-     setFxParamsID(projectListNames);
+  const projectListNames=[];
+  useEffect(()=>{
+    onSnapshot(q,(querySnapshot)=>{
 
-   })
+      querySnapshot.forEach((doc)=>{
+        projects.push(doc.data());
+        projectListNames.push(doc.id);
+      })
+      //console.log(projects);
+      setFxParams(projects);
+      setFxParamsID(projectListNames);
+
+    })
+  },[]);
 
   const handleChangeCheck = (event) => {
     setChecked(event.target.checked);

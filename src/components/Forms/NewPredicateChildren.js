@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentProject } from '../../features/userSlice';
 import { db } from '../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
+import {useEffect} from "react";
 
 
 const theme = createTheme({
@@ -59,14 +60,16 @@ export default function AddParameter() {
 
     const projects=[];
     const projectListNames=[];
-   const data2 = onSnapshot(q,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       projects.push(doc.data());
-     })
-     //console.log(projects);
-     setSubtype(projects);
-   })
+   useEffect(()=>{
+       onSnapshot(q,(querySnapshot)=>{
+
+           querySnapshot.forEach((doc)=>{
+               projects.push(doc.data());
+           })
+           //console.log(projects);
+           setSubtype(projects);
+       })
+   },[]);
 
    const handleChangeMultiple = (event) => {
     event.preventDefault();

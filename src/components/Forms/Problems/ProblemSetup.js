@@ -18,6 +18,7 @@ import { selectCurrentProject } from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import {useEffect} from "react";
+import ConstructionIcon from '@mui/icons-material/Construction';
 
 
 const theme = createTheme({
@@ -28,11 +29,7 @@ const theme = createTheme({
 let projectNumber=0;
 export default function ProblemSetup() {
     const id=useSelector(selectCurrentProject).id;
-    const [metric, setMetric] = React.useState("Minimize");
     const navigate= useNavigate();
-    const handleChangeMetric = (event) => {
-        setMetric(event.target.value);
-    };
 
 //conexion a db para obtener listado de funciones
     const [functionList, setFunctionList] = React.useState([]);
@@ -56,15 +53,12 @@ export default function ProblemSetup() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const params={
-            name: data.get('name'),
             function: functionList[projectNumber].name,
-            metric: metric,
-
         };
 
-        CreateVariable(data.get('name'), "Problems", params, id);
+        //CreateVariable(data.get('name'), "Problems", params, id);
         console.log(params);
-        navigate("/dashboard");
+        //navigate("/dashboard");
 
     };
     const handleChangeMultiple = (event) => {
@@ -94,7 +88,7 @@ export default function ProblemSetup() {
                     }}
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <AddCircleOutlineOutlinedIcon fontSize='large'/>
+                        <ConstructionIcon fontSize='large'/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Problem Setup
