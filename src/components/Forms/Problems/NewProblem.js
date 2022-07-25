@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentProject } from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, onSnapshot, query } from 'firebase/firestore';
+import {useEffect} from "react";
 
 
 const theme = createTheme({
@@ -40,14 +41,16 @@ const ref="/Projects/"+id+"/Functions";
   const q = query(collection(db, ref));
   const functions=[];
     
-   const data2 = onSnapshot(q,(querySnapshot)=>{
-     
-     querySnapshot.forEach((doc)=>{
-       functions.push(doc.data());
-     })
-     //console.log(projects);
-     setFunctionList(functions);
-   })
+   useEffect(()=>{
+       onSnapshot(q,(querySnapshot)=>{
+
+           querySnapshot.forEach((doc)=>{
+               functions.push(doc.data());
+           })
+           //console.log(projects);
+           setFunctionList(functions);
+       })
+   },[]);
 
   const handleCreate = (event) => {
     event.preventDefault();

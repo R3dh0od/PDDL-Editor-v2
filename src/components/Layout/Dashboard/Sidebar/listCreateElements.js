@@ -21,8 +21,7 @@ export default function MainListItems (){
             <BasicModal titulo="Create new state" icono={icono2} tituloModal="New State" dir='/newstate'></BasicModal>
             <BasicModal titulo="Create new action" icono={icono2} tituloModal="New Action" dir='/newaction'></BasicModal>
             <BasicModal titulo="Create new problem" icono={icono2} tituloModal="New Problem" dir='/newproblem'></BasicModal>
-
-            
+            <BasicModal titulo="Problem setup" icono={icono2} tituloModal="Problem setup" dir='/problemsetup'></BasicModal>
           </List>
  
    );
