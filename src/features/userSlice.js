@@ -9,6 +9,7 @@ const initialState = {
     projectList: {id: {}, projectName: {}},
     predParams:[],
     addParams: {},
+    switchView: true,
 }
 
 
@@ -41,7 +42,9 @@ const userSlice = createSlice({
       setAddParams:(state,action)=>{
         state.addParams=action.payload.addParams
       },
-
+      setSwitchView: (state, action)=>{
+          state.switchView=action.payload.switchView
+      },
   }
 });
 
@@ -53,6 +56,7 @@ export const {
   setProjectList, 
   setPredParams,
   setAddParams,
+    setSwitchView,
 } = userSlice.actions
 
 export const selectUserID = state => state.user.uid
@@ -62,6 +66,7 @@ export const selectCurrentProject = state => state.user.currentProject
 export const selectProjectList = state => state.user.projectList
 export const selectPredParams = state => state.user.predParams
 export const selectAddParams= state => state.user.addParams
+export const selectSwitchView= state => state.user.switchView
 
 
 export default userSlice.reducer

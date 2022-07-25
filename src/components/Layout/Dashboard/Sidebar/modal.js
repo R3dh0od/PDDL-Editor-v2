@@ -6,7 +6,14 @@ import { Paper } from '@mui/material';
 import { styled } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentProject, selectUserID, selectUserImage, selectUserName, setPredParams } from '../../../../features/userSlice';
+import {
+    selectCurrentProject, selectSwitchView,
+    selectUserID,
+    selectUserImage,
+    selectUserName,
+    setPredParams,
+    setSwitchView
+} from '../../../../features/userSlice';
 import { aux2 } from '../../../Forms/temporalVariables';
 
 
@@ -36,6 +43,7 @@ export default function BasicModal({titulo, icono, tituloModal, dir}) {
     const name= useSelector(selectUserName);
     const image= useSelector(selectUserImage);
     const currentProject= useSelector(selectCurrentProject);
+    const viewState=useSelector(selectSwitchView);
     const params={};
     const navigate= useNavigate();
     let handleClick;
@@ -51,6 +59,22 @@ export default function BasicModal({titulo, icono, tituloModal, dir}) {
             }))
             navigate(dir);
         }
+    }
+    else {
+        handleClick=()=>{
+        if(viewState==false){
+            dispatch(setSwitchView({
+
+                switchView: true,
+            }))
+        }
+        else {
+            dispatch(setSwitchView({
+
+                switchView: false,
+            }))
+        }
+            }
     }
 
        

@@ -21,8 +21,14 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import { collection, onSnapshot, query } from 'firebase/firestore';
-import { useSelector } from 'react-redux';
-import { selectCurrentProject } from '../../../../features/userSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  selectCurrentProject,
+  selectSwitchView,
+  selectUserID,
+  selectUserImage,
+  selectUserName
+} from '../../../../features/userSlice';
 import { db } from '../../../../firebase/firebaseconfig';
 import { DeleteProjectDb } from './DeleteElementDB';
 import { DeleteVariableTemp } from '../../../Forms/DeleteVariable';

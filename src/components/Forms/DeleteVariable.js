@@ -8,5 +8,6 @@ import { selectCurrentProject } from '../../features/userSlice';
 
 export function DeleteVariableTemp(location, params, id) {
   const ref="/Projects/"+id+"/"+location;
-  params.map(async (value)=>(await deleteDoc(doc(db, ref, value)))) 
+
+  params.map(async (value)=>(await deleteDoc(doc(db, ref, value))))
 }

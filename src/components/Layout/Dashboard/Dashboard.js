@@ -21,6 +21,15 @@ import Copyrigth from '../copyrigth';
 import Diagrama1 from './Diagram2';
 import ExportButton from "../../XML/ExportButton";
 import Diagrama2 from "../../Forms/Types/Hierarchy";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    selectCurrentProject,
+    selectProjectList,
+    selectSwitchView,
+    selectUserID,
+    selectUserImage,
+    selectUserName
+} from "../../../features/userSlice";
 
 
 const drawerWidth = 240;
@@ -85,6 +94,20 @@ const mdTheme = createTheme(
 
 function DashboardContent() {
   const [open, setOpen] = React.useState(true);
+    const dispatch=useDispatch();
+    const uid= useSelector(selectUserID);
+    const name= useSelector(selectUserName);
+    const image= useSelector(selectUserImage);
+    const projectList= useSelector(selectProjectList);
+    const viewState=useSelector(selectSwitchView);
+    const idProject=useSelector(selectCurrentProject).id;
+    let view;
+    if(viewState==false){
+        view=<Diagrama1 />;
+    }
+    else {
+        view=<Diagrama2 />;
+    }
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -173,7 +196,7 @@ function DashboardContent() {
                     height: '85vh',
                   }}
                 >
-                  <Diagrama2 />
+                    {view}
                 </Paper>
               </Grid>
               <Grid item xs={4}>

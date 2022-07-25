@@ -33,11 +33,11 @@ function initDiagram() {
                       //  linkKeyProperty: 'key'  // IMPORTANT! must be defined for merges and data sync when using GraphLinksModel
                     })
             });
-    diagram.layout = $(go.TreeLayout);
+    diagram.layout = $(go.TreeLayout, { angle: 90 });
     // define a simple Node template
     diagram.nodeTemplate =
         $(go.Node, "Auto",
-            $(go.Shape, "RoundedRectangle", { fill: go.Brush.randomColor(), strokeWidth: 0 }),
+            $(go.Shape, "RoundedRectangle", new go.Binding("fill", "color")),
             $(go.TextBlock, {margin: 8},
                 new go.Binding("text", "key")),
         );
