@@ -32,7 +32,7 @@ const theme = createTheme({
 let projectNumber=0;
 export default function NewType() {
 
-  const [selectItem, setSelectItem] = React.useState([]);
+  const [selectItem, setSelectItem] = React.useState(['object']);
 
   const id=useSelector(selectCurrentProject).id;
   
@@ -40,23 +40,12 @@ export default function NewType() {
   const q = query(collection(db, ref));
   
   
-  const [subtype, setSubtype] = React.useState([]);
+  const [subtype, setSubtype] = React.useState('');
+  const [form, setForm]=React.useState([]);
+  const [form2, setForm2]=React.useState([]);
   const navigate= useNavigate();
   
-  const handleCreate = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const params={
-      name: data.get('name'),
 
-      subtypeOf: subtype[projectNumber].name,
-  };
-    
-    CreateVariable(data.get('name'), "Types", params, id);
-    console.log(params);
-   navigate("/dashboard");
-    
-  };
 
     const projects=[];
     
@@ -67,23 +56,37 @@ export default function NewType() {
                projects.push(doc.data());
            })
            //console.log(projects);
-           setSubtype(projects);
+           setForm(projects);
        })
    },[]);
 
    const handleChangeMultiple = (event) => {
     event.preventDefault();
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-        projectNumber=i;
-      }
-    }
-    setSelectItem(value); 
+       const temporalData=event.target.value;
+       setSubtype(temporalData);
+       form.map((value)=>{
+           if(temporalData==value.name){
+               setForm2(value.Params);
+           }
+
+       })
    
   };
+
+    const handleCreate = (event) => {
+        //event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const params={
+            name: data.get('name'),
+
+            subtypeOf: subtype,
+        };
+
+        CreateVariable(data.get('name'), "Types", params, id);
+        // console.log(params);
+        navigate("/dashboard");
+
+    };
 
   return (
     <ThemeProvider theme={theme}>
@@ -121,18 +124,17 @@ export default function NewType() {
         </InputLabel>
         <Select
           
-          native
+
           fullWidth
-          value={selectItem}
+          value={subtype}
           onChange={handleChangeMultiple}
           inputProps={{
-            id: 'select-multiple-native',
+              id: 'select-multiple-native',
           }}
+
         >
-          {subtype.map((name) => (
-            <option key={name.name} value={name.name}>
-              {name.name}
-            </option>
+          {form.map((name) => (
+              <MenuItem value={name.name}>{name.name}</MenuItem>
           ))}
         </Select>
 
@@ -156,7 +158,7 @@ export default function NewType() {
             >
               Cancel
             </Button>
-           
+
           </Box>
         </Box>
         

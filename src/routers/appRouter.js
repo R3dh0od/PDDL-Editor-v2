@@ -18,6 +18,9 @@ import LoadProjects from "../components/Layout/Projects/LoadProjects";
 import { NewProject } from "../components/Layout/Projects/NewProject";
 import Projects from "../components/Layout/Projects/Projects";
 import ProblemSetup from "../components/Forms/Problems/ProblemSetup";
+import NewProblemSetup from "../components/Forms/Problems/ProblemSetup2";
+import NewProblemObject from "../components/Forms/Problems/NewObject";
+import AddPredProblem from "../components/Forms/Problems/ProblemPredicate";
 
 
 export default function AppRouter(){
@@ -43,6 +46,11 @@ export default function AppRouter(){
                 <Route  path="/addactionfunction" element={<AddFxAction />}/>
                 <Route  path="/addstatefunction" element={<AddFxState />}/>
                 <Route  path="/problemsetup" element={<ProblemSetup />}/>
+                <Route  path="/newproblemsetup" element={<NewProblemSetup />}/>
+                <Route  path="/newproblemobject" element={<NewProblemObject />}/>
+                <Route  path="/newproblempredicate" element={<AddPredProblem />}/>
+                <Route  path="/newproblemfunction" element={<NewProblemSetup />}/>
+                <Route  path="/newproblemgoal" element={<NewProblemSetup />}/>
                 <Route  path="*" element={<NotFound />}/>
             </Routes>
         </BrowserRouter>

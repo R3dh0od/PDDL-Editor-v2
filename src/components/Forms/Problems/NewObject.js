@@ -13,12 +13,16 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import { CreateVariable } from '../saveVariables';
-import {useDispatch, useSelector} from 'react-redux';
-import {selectCurrentProject, setAddParams, setCurrentProject} from '../../../features/userSlice';
+import { useSelector } from 'react-redux';
+import {selectAddParams, selectCurrentProject} from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { collection, query, onSnapshot } from 'firebase/firestore';
+import XMLGenerator from '../../XML/exportXMLTypes';
+import GetDataFromDB from "../../../firebase/getDataFromDB";
 import {useEffect} from "react";
-import ConstructionIcon from '@mui/icons-material/Construction';
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import {CreateProblemParam} from "./CreateProblemDBParams";
 
 
 const theme = createTheme({
@@ -26,47 +30,55 @@ const theme = createTheme({
         type: "dark"
     }
 });
+
+
 let projectNumber=0;
-export default function ProblemSetup() {
-    const dispatch = useDispatch();
+export default function NewProblemObject() {
+
+    const [selectItem, setSelectItem] = React.useState([]);
+    const [checked, setChecked] = React.useState(false);
+
     const id=useSelector(selectCurrentProject).id;
+    const currentProblem=useSelector(selectAddParams);
+
+    const ref="/Projects/"+id+"/Types";
+    const q = query(collection(db, ref));
+
+
+    const [subtype, setSubtype] = React.useState([]);
     const navigate= useNavigate();
 
-//conexion a db para obtener listado de funciones
-    const [functionList, setFunctionList] = React.useState([]);
-    const [selectItem, setSelectItem] = React.useState([]);
-    const ref="/Projects/"+id+"/Problems";
-    const q = query(collection(db, ref));
-    const functions=[];
+    const handleCreate = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const params={
+            name: data.get('name'),
+            type: subtype[projectNumber].name,
+            constant: checked,
+        };
+        CreateProblemParam(currentProblem, params, id);
+        //CreateVariable(data.get('name'), "Types", params, id);
+        //console.log(params);
+        navigate("/dashboard");
+
+    };
+
+    const projects=[];
 
     useEffect(()=>{
         onSnapshot(q,(querySnapshot)=>{
 
             querySnapshot.forEach((doc)=>{
-                functions.push(doc.data());
+                projects.push(doc.data());
             })
             //console.log(projects);
-            setFunctionList(functions);
+            setSubtype(projects);
         })
     },[]);
 
-    const handleCreate = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const params=functionList[projectNumber].name;
-
-        //CreateVariable(data.get('name'), "Problems", params, id);
-
-        dispatch(setAddParams({
-            addParams: params,
-        }))
-        console.log(params);
-        navigate("/newproblemsetup");
-
-    };
     const handleChangeMultiple = (event) => {
         event.preventDefault();
-        const  options  = event.target;
+        const { options } = event.target;
         const value = [];
         for (let i = 0, l = options.length; i < l; i += 1) {
             if (options[i].selected) {
@@ -76,6 +88,10 @@ export default function ProblemSetup() {
         }
         setSelectItem(value);
 
+    };
+
+    const handleChangeCheck = (event) => {
+        setChecked(event.target.checked);
     };
 
     return (
@@ -91,31 +107,44 @@ export default function ProblemSetup() {
                     }}
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <ConstructionIcon fontSize='large'/>
+                        <AddCircleOutlineOutlinedIcon fontSize='large'/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Problem Setup
+                        New Object
                     </Typography>
                     <Box component="form" onSubmit={handleCreate} noValidate sx={{ mt: 1 }}>
+                        <FormControlLabel control={<Checkbox name='Constant' checked={checked} onChange={handleChangeCheck} />} label="Constant" />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="name"
+                            label="Name"
+                            name="name"
+                            autoComplete="name"
+                            autoFocus
+                        />
 
-                        <InputLabel id="demo-simple-select-label">Select Problem</InputLabel>
+
+                        <InputLabel shrink htmlFor="select-multiple-native">
+                            Type
+                        </InputLabel>
                         <Select
 
                             native
                             fullWidth
                             value={selectItem}
                             onChange={handleChangeMultiple}
-
+                            inputProps={{
+                                id: 'select-multiple-native',
+                            }}
                         >
-
-                            {functionList.map((name) => (
+                            {subtype.map((name) => (
                                 <option key={name.name} value={name.name}>
                                     {name.name}
                                 </option>
                             ))}
                         </Select>
-
-
 
                         <Button
                             type="submit"
@@ -124,11 +153,12 @@ export default function ProblemSetup() {
                             sx={{ mt: 3, mb: 2 }}
 
                         >
-                            Configure
+                            Create
                         </Button>
+
                         <Button
                             color='secondary'
-                            onClick={()=>{navigate("/dashboard");}}
+                            onClick={()=>{navigate("/newproblemsetup");}}
                             fullWidth
                             variant="contained"
                             sx={{ mt: 0, mb: 2 }}

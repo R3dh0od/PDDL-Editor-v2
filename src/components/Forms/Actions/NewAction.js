@@ -67,9 +67,11 @@ export default function NewAction() {
   const q3 = query(collection(db, ref5));
   const [fxParams, setFxParams] = React.useState([]);
   const [fxParamsID, setFxParamsID] = React.useState([]);
-
+  const ref="/Projects/"+id+"/States";
+  const q = query(collection(db, ref));
+  const states=[];
   const projects2=[];
-    const projectListNames2=[];
+  const projectListNames2=[];
 
     useEffect(()=>{
       onSnapshot(q3,(querySnapshot)=>{
@@ -99,9 +101,7 @@ export default function NewAction() {
 
 
 
-  const ref="/Projects/"+id+"/States";
-  const q = query(collection(db, ref));
-  const states=[];
+
 
   const handleChangeCheck = (event) => {
     setChecked(event.target.checked);

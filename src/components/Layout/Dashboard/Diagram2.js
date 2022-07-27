@@ -54,7 +54,8 @@ function initDiagram() {
 
   // define a simple Node template
   diagram.nodeTemplate =
-    $(go.Node, 'Auto',  // the Shape will go around the TextBlock
+    $(go.Node, 'Auto', { locationSpot: go.Spot.Center },
+        new go.Binding("location", "loc").makeTwoWay(), // the Shape will go around the TextBlock
         {
             mouseEnter: mouseEnter,
             mouseLeave: mouseLeave
@@ -73,7 +74,7 @@ function initDiagram() {
                 node.findNodesOutOf().each(function(n) { n.isHighlighted = true; });
                 diagram.commitTransaction("highlight");
             }},
-      new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
+      //new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
       $(go.Shape, 'RoundedRectangle',
         { name: 'SHAPE', fill: 'white', strokeWidth: 0 },
         // Shape.fill is bound to Node.data.color
@@ -89,7 +90,7 @@ function initDiagram() {
         $(go.Link,
             $(go.Shape,
                 // the Shape.stroke color depends on whether Link.isHighlighted is true
-                new go.Binding("stroke", "isHighlighted", function(h) { return h ? "red" : "black"; })
+                new go.Binding("stroke", "isHighlighted", function(h) { return h ? "red" : "gray"; })
                     .ofObject(),
                 // the Shape.strokeWidth depends on whether Link.isHighlighted is true
                 new go.Binding("strokeWidth", "isHighlighted", function(h) { return h ? 3 : 1; })
@@ -97,10 +98,10 @@ function initDiagram() {
             $(go.Shape,
                 { toArrow: "Standard", strokeWidth: 0 },
                 // the Shape.fill color depends on whether Link.isHighlighted is true
-                new go.Binding("fill", "isHighlighted", function(h) { return h ? "red" : "black"; })
+                new go.Binding("fill", "isHighlighted", function(h) { return h ? "red" : "gray"; })
                     .ofObject()),
             $(go.TextBlock,
-                { alignmentFocus: new go.Spot(1, 0.5, 3, -10) },
+                { alignmentFocus: new go.Spot(0.5, 0.5, 3, -10) },
                 //{ segmentOffset: new go.Point(0, -10) }, // centered multi-line text
                 new go.Binding("text", "text"))
         );
@@ -166,13 +167,14 @@ export default function Diagrama1() {
 
     let nodeDataArray=[];
     let linkDataArray=[];
-
-        stateList.map((value)=>(
+    let aux=0;
+        stateList.map((value, index)=>(
             nodeDataArray.push(
                 {
                     key: value.name,
                     text: value.name,
-                    color: go.Brush.randomColor()
+                    color: go.Brush.randomColor(),
+
                 }
             )
         ))

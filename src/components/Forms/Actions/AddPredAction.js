@@ -96,11 +96,6 @@ export default function AddPredAction() {
         navigate("/newaction");
 
     };
-  
-  
-
-
- 
 
   const handleChangeCheck = (event) => {
     setChecked(event.target.checked);
