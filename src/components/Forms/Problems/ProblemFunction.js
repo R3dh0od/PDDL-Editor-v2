@@ -8,21 +8,20 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import { CreateVariable } from '../saveVariables';
-import { useSelector } from 'react-redux';
-import {selectAddParams, selectCurrentProject} from '../../../features/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentProject, selectPredParams, selectUserID, selectUserImage, selectUserName, setPredParams } from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
-import XMLGenerator from '../../XML/exportXMLTypes';
-import GetDataFromDB from "../../../firebase/getDataFromDB";
+import { Checkbox, FormControlLabel } from '@mui/material';
+import { CreateVariableTemp } from '../saveTemporalVariables';
+
 import {useEffect} from "react";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import {CreateProblemParam} from "./CreateProblemDBParams";
+import {CreateVariableTempPredState} from "../States/tempData";
 
 
 const theme = createTheme({
@@ -33,43 +32,28 @@ const theme = createTheme({
 
 
 let projectNumber=0;
-export default function NewProblemObject() {
-
-    const [selectItem, setSelectItem] = React.useState([]);
-    const [checked, setChecked] = React.useState(false);
+export default function AddFunctionProblem() {
 
     const id=useSelector(selectCurrentProject).id;
-    const currentProblem=useSelector(selectAddParams);
 
-    const ref="/Projects/"+id+"/Types";
+    const ref="/Projects/"+id+"/Functions";
     const ref2="/Projects/"+id+"/ProblemObjectData";
     const q = query(collection(db, ref));
     const q2 = query(collection(db, ref2));
 
 
+    const [form, setForm]=React.useState([]);
+    const [form2, setForm2]=React.useState([]);
+    const [form3, setForm3]=React.useState([]);
     const [subtype, setSubtype] = React.useState([]);
-    const [form2, setForm2] = React.useState([]);
+    const [objectList, setObjectList] = React.useState([]);
     const navigate= useNavigate();
 
-    const handleCreate = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const params={
-            'problem': currentProblem,
-            name: data.get('name'),
-            type: selectItem,
-            constant: checked,
-        };
-        CreateProblemParam(params, id);
-        //CreateVariable(data.get('name'), "Types", params, id);
-        //console.log(params);
-        navigate("/newproblemsetup");
-
-    };
 
     const projects=[];
     const objects=[];
-
+    const additionalParams=[];
+    const additionalParams2=[];
     useEffect(()=>{
         onSnapshot(q,(querySnapshot)=>{
 
@@ -77,15 +61,31 @@ export default function NewProblemObject() {
                 projects.push(doc.data());
             })
             //console.log(projects);
-            setSubtype(projects);
+            setForm(projects);
+
         });
+        onSnapshot(q2,(querySnapshot)=>{
+
+            querySnapshot.forEach((doc)=>{
+                objects.push(doc.data());
+            })
+            //console.log(projects);
+            setForm3(objects);
+
+        })
     },[]);
 
-    const handleChangeMultiple = (event) => {
+
+    const handleChangeObject = (event) => {
         event.preventDefault();
         const temporalData=event.target.value;
-        setSelectItem(temporalData);
-        subtype.map((value)=>{
+        setObjectList(temporalData);
+    };
+    const handleChangeSubtype = (event) => {
+        event.preventDefault();
+        const temporalData=event.target.value;
+        setSubtype(temporalData);
+        form.map((value)=>{
             if(temporalData==value.name){
                 setForm2(value.Params);
             }
@@ -93,8 +93,25 @@ export default function NewProblemObject() {
         })
     };
 
-    const handleChangeCheck = (event) => {
-        setChecked(event.target.checked);
+    const handleCreate = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+
+        form2.map((value)=>(
+            additionalParams.push(value),
+                additionalParams2.push({variable: data.get(value.name)})
+        ))
+
+        const params={
+            params: additionalParams,
+            variables: additionalParams2,
+            predicate: subtype,
+
+        };
+
+        //CreateVariableTempPredState(ref2, params, id);
+        navigate("/newaction");
+
     };
 
     return (
@@ -113,38 +130,48 @@ export default function NewProblemObject() {
                         <AddCircleOutlineOutlinedIcon fontSize='large'/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        New Object
+                        Instantiate Function
                     </Typography>
                     <Box component="form" onSubmit={handleCreate} noValidate sx={{ mt: 1 }}>
-                        <FormControlLabel control={<Checkbox name='Constant' checked={checked} onChange={handleChangeCheck} />} label="Constant" />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="name"
-                            label="Name"
-                            name="name"
-                            autoComplete="name"
-                            autoFocus
-                        />
-
-
                         <InputLabel shrink htmlFor="select-multiple-native">
-                            Type
+                            Function
                         </InputLabel>
                         <Select
-
                             fullWidth
-                            value={selectItem}
-                            onChange={handleChangeMultiple}
+                            sx={{mb: 2}}
+                            value={subtype}
+                            onChange={handleChangeSubtype}
                             inputProps={{
                                 id: 'select-multiple-native',
                             }}
                         >
-                            {subtype.map((name) => (
-                                <MenuItem value={name.name} key={name.name}>{name.name}</MenuItem>
+                            {form.map((name) => (
+                                <MenuItem value={name.name}>{name.name}</MenuItem>
                             ))}
                         </Select>
+                        <Box>
+                            {form2.map((value)=>(
+                                <>
+                                    <InputLabel shrink htmlFor="select-multiple-native">
+                                        {value.name}
+                                    </InputLabel>
+                                    <Select
+                                        fullWidth
+                                        sx={{mb: 2}}
+                                        value={objectList}
+                                        onChange={handleChangeObject}
+                                        inputProps={{
+                                            id: 'select-multiple-native',
+                                        }}
+                                    >
+
+                                        {form3.map((name) => (
+                                            <MenuItem value={name.name}>{name.name}</MenuItem>
+                                        ))}
+
+                                    </Select></>
+                            ))}
+                        </Box>
 
                         <Button
                             type="submit"
@@ -153,9 +180,9 @@ export default function NewProblemObject() {
                             sx={{ mt: 3, mb: 2 }}
 
                         >
-                            Create
-                        </Button>
 
+                            ADD
+                        </Button>
                         <Button
                             color='secondary'
                             onClick={()=>{navigate("/newproblemsetup");}}
@@ -166,7 +193,6 @@ export default function NewProblemObject() {
                         >
                             Cancel
                         </Button>
-
                     </Box>
                 </Box>
 

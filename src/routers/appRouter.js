@@ -21,6 +21,8 @@ import ProblemSetup from "../components/Forms/Problems/ProblemSetup";
 import NewProblemSetup from "../components/Forms/Problems/ProblemSetup2";
 import NewProblemObject from "../components/Forms/Problems/NewObject";
 import AddPredProblem from "../components/Forms/Problems/ProblemPredicate";
+import AddGoalProblem from "../components/Forms/Problems/ProblemGoal";
+import AddFunctionProblem from "../components/Forms/Problems/ProblemFunction";
 
 
 export default function AppRouter(){
@@ -49,8 +51,8 @@ export default function AppRouter(){
                 <Route  path="/newproblemsetup" element={<NewProblemSetup />}/>
                 <Route  path="/newproblemobject" element={<NewProblemObject />}/>
                 <Route  path="/newproblempredicate" element={<AddPredProblem />}/>
-                <Route  path="/newproblemfunction" element={<NewProblemSetup />}/>
-                <Route  path="/newproblemgoal" element={<NewProblemSetup />}/>
+                <Route  path="/newproblemfunction" element={<AddFunctionProblem />}/>
+                <Route  path="/newproblemgoal" element={<AddGoalProblem />}/>
                 <Route  path="*" element={<NotFound />}/>
             </Routes>
         </BrowserRouter>

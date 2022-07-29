@@ -134,7 +134,7 @@ export default function NewType() {
 
         >
           {form.map((name) => (
-              <MenuItem value={name.name}>{name.name}</MenuItem>
+              <MenuItem value={name.name} key={name.name}>{name.name}</MenuItem>
           ))}
         </Select>
 

@@ -6,9 +6,8 @@ import { db } from '../../../firebase/firebaseconfig';
 
 
 
-export async function CreateProblemParam(location, params, id) {
-    const ref="/Projects/"+id+"/"+'Problems/'+location;
+export async function CreateProblemParam(params, id) {
+    const ref="/Projects/"+id+"/"+'ProblemObjectData';
     console.log(ref, params, id);
-    await updateDoc(doc(db, ref), {
-        'params': params});
+    await setDoc(doc(db, ref, params.name), params);
     }

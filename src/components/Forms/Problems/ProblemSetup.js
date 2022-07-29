@@ -34,7 +34,7 @@ export default function ProblemSetup() {
 
 //conexion a db para obtener listado de funciones
     const [functionList, setFunctionList] = React.useState([]);
-    const [selectItem, setSelectItem] = React.useState([]);
+    const [selectItem, setSelectItem] = React.useState(['']);
     const ref="/Projects/"+id+"/Problems";
     const q = query(collection(db, ref));
     const functions=[];
@@ -53,28 +53,26 @@ export default function ProblemSetup() {
     const handleCreate = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        const params=functionList[projectNumber].name;
+        const params=selectItem;
 
         //CreateVariable(data.get('name'), "Problems", params, id);
 
         dispatch(setAddParams({
             addParams: params,
         }))
-        console.log(params);
-        navigate("/newproblemsetup");
+        if(params==''){
+            alert('PLEASE SELECT A PROBLEM');
+        }
+        else {
+            navigate("/newproblemsetup");
+        }
+
 
     };
     const handleChangeMultiple = (event) => {
         event.preventDefault();
-        const  options  = event.target;
-        const value = [];
-        for (let i = 0, l = options.length; i < l; i += 1) {
-            if (options[i].selected) {
-                value.push(options[i].value);
-                projectNumber=i;
-            }
-        }
-        setSelectItem(value);
+        const temporalData=event.target.value;
+        setSelectItem(temporalData);
 
     };
 
@@ -101,17 +99,16 @@ export default function ProblemSetup() {
                         <InputLabel id="demo-simple-select-label">Select Problem</InputLabel>
                         <Select
 
-                            native
                             fullWidth
                             value={selectItem}
                             onChange={handleChangeMultiple}
+                            inputProps={{
+                                id: 'select-multiple-native',
+                            }}
 
                         >
-
-                            {functionList.map((name) => (
-                                <option key={name.name} value={name.name}>
-                                    {name.name}
-                                </option>
+                            {functionList.map((value) => (
+                                <MenuItem value={value.name} key={value.name}>{value.name}</MenuItem>
                             ))}
                         </Select>
 
