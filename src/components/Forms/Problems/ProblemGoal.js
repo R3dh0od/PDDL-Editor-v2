@@ -79,7 +79,7 @@ export default function AddGoalProblem() {
     const handleChangeObject = (event) => {
         event.preventDefault();
         const temporalData=event.target.value;
-        setObjectList(temporalData);
+        setObjectList([temporalData, temporalData, temporalData]);
     };
     const handleChangeSubtype = (event) => {
         event.preventDefault();
@@ -150,7 +150,7 @@ export default function AddGoalProblem() {
                             ))}
                         </Select>
                         <Box>
-                            {form2.map((value)=>(
+                            {form2.map((value, index)=>(
                                 <>
                                     <InputLabel shrink htmlFor="select-multiple-native">
                                         {value.name}
@@ -158,7 +158,7 @@ export default function AddGoalProblem() {
                                     <Select
                                         fullWidth
                                         sx={{mb: 2}}
-                                        value={objectList}
+                                        value={objectList[index]}
                                         onChange={handleChangeObject}
                                         inputProps={{
                                             id: 'select-multiple-native',

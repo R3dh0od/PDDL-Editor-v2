@@ -55,7 +55,7 @@ function initDiagram() {
   // define a simple Node template
   diagram.nodeTemplate =
     $(go.Node, 'Auto', { locationSpot: go.Spot.Center },
-        new go.Binding("location", "loc").makeTwoWay(), // the Shape will go around the TextBlock
+        new go.Binding("position", "pos").makeTwoWay(), // the Shape will go around the TextBlock
         {
             mouseEnter: mouseEnter,
             mouseLeave: mouseLeave
@@ -174,7 +174,7 @@ export default function Diagrama1() {
                     key: value.name,
                     text: value.name,
                     color: go.Brush.randomColor(),
-
+                    pos: new go.Point(0, 100*index),
                 }
             )
         ))

@@ -12,6 +12,8 @@ import ExportXMLFunctions from "./exportXMLFunctions";
 import ExportXMLStates from "./exportXMLStates";
 import ExportXMLActions from "./exportXMLActions";
 
+
+
 export default function ExportButton(){
     const id=[
         "Types",
@@ -46,6 +48,13 @@ export default function ExportButton(){
     let states=[];
     let actions=[];
     let problems=[];
+    let types2=[];
+    let preds2=[];
+    let functions2=[];
+    let states2=[];
+    let actions2=[];
+    let problems2=[];
+    let XMLFile='';
     const [projectTypeData, setProjectTypeData] = useState([]);
     const [projectPredData, setProjectPredData] = useState([]);
     const [projectFxData, setProjectFxData] = useState([]);
@@ -139,11 +148,13 @@ export default function ExportButton(){
                 projectActionData[i].ParamsFx,
             ]);
         }
-        ExportXMLTypes(types);
-        ExportXMLPreds(preds);
-        ExportXMLFunctions(functions);
-        ExportXMLStates(states);
-        ExportXMLActions(actions);
+        types2=ExportXMLTypes(types);
+        preds2=ExportXMLPreds(preds);
+        functions2=ExportXMLFunctions(functions);
+        states2=ExportXMLStates(states);
+        actions2=ExportXMLActions(actions);
+
+        XMLFile=types2+'\n'+preds2+'\n'+functions2+'\n'+states2+'\n'+actions2;
 
         types=[];
         preds=[];
@@ -151,6 +162,9 @@ export default function ExportButton(){
         states=[];
         actions=[];
         problems=[];
+        var FileSaver = require('file-saver');
+        var blob = new Blob([XMLFile], {type: "text/plain;charset=utf-8"});
+        FileSaver.saveAs(blob, "CurrentModel.xml");
     }
 
     return(

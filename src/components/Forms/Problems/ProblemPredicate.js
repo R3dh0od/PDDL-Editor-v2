@@ -79,7 +79,7 @@ export default function AddPredProblem() {
     const handleChangeObject = (event) => {
         event.preventDefault();
         const temporalData=event.target.value;
-        setObjectList(temporalData);
+        setObjectList([temporalData, temporalData, temporalData]);
     };
     const handleChangeSubtype = (event) => {
         event.preventDefault();
@@ -150,26 +150,26 @@ export default function AddPredProblem() {
                             ))}
                         </Select>
                         <Box>
-                            {form2.map((value)=>(
+                            {form2.map((value, index)=>(
                                 <>
                                     <InputLabel shrink htmlFor="select-multiple-native">
                                         {value.name}
                                     </InputLabel>
-                                <Select
-                                    fullWidth
-                                    sx={{mb: 2}}
-                                    value={objectList}
-                                    onChange={handleChangeObject}
-                                    inputProps={{
-                                        id: 'select-multiple-native',
-                                    }}
-                                >
+                                    <Select
+                                        fullWidth
+                                        sx={{mb: 2}}
+                                        value={objectList[index]}
+                                        onChange={handleChangeObject}
+                                        inputProps={{
+                                            id: 'select-multiple-native',
+                                        }}
+                                    >
 
-                                    {form3.map((name) => (
-                                        <MenuItem value={name.name}>{name.name}</MenuItem>
-                                    ))}
+                                        {form3.map((name) => (
+                                            <MenuItem value={name.name}>{name.name}</MenuItem>
+                                        ))}
 
-                                </Select></>
+                                    </Select></>
                             ))}
                         </Box>
 

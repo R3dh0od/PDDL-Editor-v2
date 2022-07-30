@@ -22,5 +22,7 @@ export default function ExportXMLPreds(aux){
     )
     var xml = root.end({ pretty: true, allowEmpty: true});
     let result = xml.replace("<?xml version=\"1.0\"?>", "").slice(1);
-    console.log(result);
+    return(
+        result
+    );
 }

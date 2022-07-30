@@ -76,10 +76,12 @@ export default function AddFunctionProblem() {
     },[]);
 
 
+
+
     const handleChangeObject = (event) => {
         event.preventDefault();
         const temporalData=event.target.value;
-        setObjectList(temporalData);
+        setObjectList([temporalData, temporalData, temporalData]);
     };
     const handleChangeSubtype = (event) => {
         event.preventDefault();
@@ -150,7 +152,7 @@ export default function AddFunctionProblem() {
                             ))}
                         </Select>
                         <Box>
-                            {form2.map((value)=>(
+                            {form2.map((value, index)=>(
                                 <>
                                     <InputLabel shrink htmlFor="select-multiple-native">
                                         {value.name}
@@ -158,7 +160,7 @@ export default function AddFunctionProblem() {
                                     <Select
                                         fullWidth
                                         sx={{mb: 2}}
-                                        value={objectList}
+                                        value={objectList[index]}
                                         onChange={handleChangeObject}
                                         inputProps={{
                                             id: 'select-multiple-native',
