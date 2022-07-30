@@ -181,7 +181,7 @@ export default function AddPredProblem() {
 
                         >
 
-                            ADD
+                            Save
                         </Button>
                         <Button
                             color='secondary'

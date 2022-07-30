@@ -11,6 +11,7 @@ import ExportXMLPreds from "./exportXMLPreds";
 import ExportXMLFunctions from "./exportXMLFunctions";
 import ExportXMLStates from "./exportXMLStates";
 import ExportXMLActions from "./exportXMLActions";
+import ExportXMLProblems from "./exportXMLProblems";
 
 
 
@@ -148,13 +149,21 @@ export default function ExportButton(){
                 projectActionData[i].ParamsFx,
             ]);
         }
+        for(let i=0; i<projectProblemData.length; i++){
+            problems.push([
+                projectProblemData[i].name,
+                projectProblemData[i].metric,
+                projectProblemData[i].function,
+            ]);
+        }
         types2=ExportXMLTypes(types);
         preds2=ExportXMLPreds(preds);
         functions2=ExportXMLFunctions(functions);
         states2=ExportXMLStates(states);
         actions2=ExportXMLActions(actions);
+        problems2=ExportXMLProblems(problems);
 
-        XMLFile=types2+'\n'+preds2+'\n'+functions2+'\n'+states2+'\n'+actions2;
+        XMLFile=types2+'\n'+preds2+'\n'+functions2+'\n'+states2+'\n'+actions2+'\n'+problems2;
 
         types=[];
         preds=[];

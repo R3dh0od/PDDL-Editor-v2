@@ -183,7 +183,7 @@ export default function AddFunctionProblem() {
 
                         >
 
-                            ADD
+                            Save
                         </Button>
                         <Button
                             color='secondary'

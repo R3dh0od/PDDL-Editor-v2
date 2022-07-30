@@ -39,7 +39,7 @@ const [functionList, setFunctionList] = React.useState([]);
 const [selectItem, setSelectItem] = React.useState([]);
 const ref="/Projects/"+id+"/Functions";
   const q = query(collection(db, ref));
-  const functions=[];
+  const functions=[{name: 'none'}];
     
    useEffect(()=>{
        onSnapshot(q,(querySnapshot)=>{
@@ -51,33 +51,33 @@ const ref="/Projects/"+id+"/Functions";
            setFunctionList(functions);
        })
    },[]);
-
+//console.log(functionList);
   const handleCreate = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const params={
       name: data.get('name'),
-      function: functionList[projectNumber].name,
+      function: selectItem,
       metric: metric,
 
   };
   
   CreateVariable(data.get('name'), "Problems", params, id);
-    console.log(params);
+    //console.log(params);
    navigate("/dashboard");
     
   };
   const handleChangeMultiple = (event) => {
     event.preventDefault();
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
+    const temporalData=event.target.value;
+    //const value = [];
+    /*for (let i = 0, l = options.length; i < l; i += 1) {
       if (options[i].selected) {
         value.push(options[i].value);
         projectNumber=i;
       }
-    }
-    setSelectItem(value); 
+    }*/
+    setSelectItem(temporalData);
    
   };
 
@@ -113,8 +113,6 @@ const ref="/Projects/"+id+"/Functions";
            
           <InputLabel id="demo-simple-select-label">Function</InputLabel>
           <Select
-          
-              native
               fullWidth
               value={selectItem}
               onChange={handleChangeMultiple}
@@ -123,9 +121,7 @@ const ref="/Projects/"+id+"/Functions";
               }}
             >
               {functionList.map((name) => (
-                <option key={name.name} value={name.name}>
-                  {name.name}
-                </option>
+                  <MenuItem value={name.name} key={name.name}>{name.name}</MenuItem>
               ))}
         </Select>
             

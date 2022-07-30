@@ -181,7 +181,7 @@ export default function AddGoalProblem() {
 
                         >
 
-                            ADD
+                            Save
                         </Button>
                         <Button
                             color='secondary'
