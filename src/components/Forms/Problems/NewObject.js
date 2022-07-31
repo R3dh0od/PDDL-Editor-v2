@@ -60,7 +60,7 @@ export default function NewProblemObject() {
             type: selectItem,
             constant: checked,
         };
-        CreateProblemParam(params, id);
+        CreateProblemParam(params, id, 'ProblemObjectData');
         //CreateVariable(data.get('name'), "Types", params, id);
         //console.log(params);
         navigate("/newproblemsetup");

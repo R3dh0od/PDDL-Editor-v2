@@ -85,13 +85,13 @@ export default function FullWidthTabsProblems() {
                     <EnhancedTableProblems id="ProblemObjectData"/>
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                    <EnhancedTableProblems id="Predicates"/>
+                    <EnhancedTableProblems id="ProblemPredicateData"/>
                 </TabPanel>
                 <TabPanel value={value} index={2} dir={theme.direction}>
-                    <EnhancedTableProblems id="Functions"/>
+                    <EnhancedTableProblems id="ProblemFunctionData"/>
                 </TabPanel>
                 <TabPanel value={value} index={3} dir={theme.direction}>
-                    <EnhancedTableProblems id="States"/>
+                    <EnhancedTableProblems id="ProblemGoalData"/>
                 </TabPanel>
 
             </SwipeableViews>

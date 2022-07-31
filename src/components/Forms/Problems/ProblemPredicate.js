@@ -14,7 +14,15 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import { CreateVariable } from '../saveVariables';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentProject, selectPredParams, selectUserID, selectUserImage, selectUserName, setPredParams } from '../../../features/userSlice';
+import {
+    selectAddParams,
+    selectCurrentProject,
+    selectPredParams,
+    selectUserID,
+    selectUserImage,
+    selectUserName,
+    setPredParams
+} from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import { Checkbox, FormControlLabel } from '@mui/material';
@@ -22,6 +30,8 @@ import { CreateVariableTemp } from '../saveTemporalVariables';
 
 import {useEffect} from "react";
 import {CreateVariableTempPredState} from "../States/tempData";
+import {CreateProblemParam} from "./CreateProblemDBParams";
+import {CreateProblemParam2} from "./CreateProblemPredData";
 
 
 const theme = createTheme({
@@ -32,10 +42,11 @@ const theme = createTheme({
 
 
 let projectNumber=0;
+let aux=[];
 export default function AddPredProblem() {
 
     const id=useSelector(selectCurrentProject).id;
-
+    const currentProblem=useSelector(selectAddParams);
     const ref="/Projects/"+id+"/Predicates";
     const ref2="/Projects/"+id+"/ProblemObjectData";
     const q = query(collection(db, ref));
@@ -54,6 +65,7 @@ export default function AddPredProblem() {
     const objects=[];
     const additionalParams=[];
     const additionalParams2=[];
+
     useEffect(()=>{
         onSnapshot(q,(querySnapshot)=>{
 
@@ -76,11 +88,13 @@ export default function AddPredProblem() {
     },[]);
 
 
-    const handleChangeObject = (event) => {
+    const handleChangeObject = (index, event) => {
         event.preventDefault();
         const temporalData=event.target.value;
-        setObjectList([temporalData, temporalData, temporalData]);
+        aux[index]=temporalData;
+        setObjectList(aux);
     };
+    console.log(objectList);
     const handleChangeSubtype = (event) => {
         event.preventDefault();
         const temporalData=event.target.value;
@@ -103,14 +117,15 @@ export default function AddPredProblem() {
         ))
 
         const params={
-            params: additionalParams,
-            variables: additionalParams2,
-            predicate: subtype,
-
+            'problem': currentProblem,
+            'params': additionalParams,
+            'predicate': subtype,
+            'object': objectList,
+            'name': subtype,
         };
-
-        //CreateVariableTempPredState(ref2, params, id);
-        navigate("/newaction");
+        CreateProblemParam2(params, id, 'ProblemPredicateData');
+        aux=[];
+        navigate("/newproblemsetup");
 
     };
 
@@ -159,7 +174,7 @@ export default function AddPredProblem() {
                                         fullWidth
                                         sx={{mb: 2}}
                                         value={objectList[index]}
-                                        onChange={handleChangeObject}
+                                        onChange={e=>handleChangeObject(index,e)}
                                         inputProps={{
                                             id: 'select-multiple-native',
                                         }}

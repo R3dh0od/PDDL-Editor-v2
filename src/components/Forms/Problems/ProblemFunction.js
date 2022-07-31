@@ -14,7 +14,15 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import { CreateVariable } from '../saveVariables';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentProject, selectPredParams, selectUserID, selectUserImage, selectUserName, setPredParams } from '../../../features/userSlice';
+import {
+    selectAddParams,
+    selectCurrentProject,
+    selectPredParams,
+    selectUserID,
+    selectUserImage,
+    selectUserName,
+    setPredParams
+} from '../../../features/userSlice';
 import { db } from '../../../firebase/firebaseconfig';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import { Checkbox, FormControlLabel } from '@mui/material';
@@ -22,6 +30,7 @@ import { CreateVariableTemp } from '../saveTemporalVariables';
 
 import {useEffect} from "react";
 import {CreateVariableTempPredState} from "../States/tempData";
+import {CreateProblemParam2} from "./CreateProblemPredData";
 
 
 const theme = createTheme({
@@ -32,9 +41,11 @@ const theme = createTheme({
 
 
 let projectNumber=0;
+let aux=[];
 export default function AddFunctionProblem() {
 
     const id=useSelector(selectCurrentProject).id;
+    const currentProblem=useSelector(selectAddParams);
 
     const ref="/Projects/"+id+"/Functions";
     const ref2="/Projects/"+id+"/ProblemObjectData";
@@ -78,11 +89,13 @@ export default function AddFunctionProblem() {
 
 
 
-    const handleChangeObject = (event) => {
+    const handleChangeObject = (index, event) => {
         event.preventDefault();
         const temporalData=event.target.value;
-        setObjectList([temporalData, temporalData, temporalData]);
+        aux[index]=temporalData;
+        setObjectList(aux);
     };
+
     const handleChangeSubtype = (event) => {
         event.preventDefault();
         const temporalData=event.target.value;
@@ -106,13 +119,17 @@ export default function AddFunctionProblem() {
 
         const params={
             params: additionalParams,
-            variables: additionalParams2,
-            predicate: subtype,
-
+            //variables: additionalParams2,
+            'function': subtype,
+            'object': objectList,
+            'value': data.get('defaultValue'),
+            problem: currentProblem,
+            name: subtype,
         };
 
-        //CreateVariableTempPredState(ref2, params, id);
-        navigate("/newaction");
+        CreateProblemParam2(params, id, 'ProblemFunctionData');
+        aux=[];
+        navigate("/newproblemsetup");
 
     };
 
@@ -151,6 +168,18 @@ export default function AddFunctionProblem() {
                                 <MenuItem value={name.name}>{name.name}</MenuItem>
                             ))}
                         </Select>
+                        <TextField
+                            sx={{mb: 3}}
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="filled-number"
+                            label="Value"
+                            type="number"
+                            name="defaultValue"
+                            autoComplete="name"
+                            autoFocus
+                        />
                         <Box>
                             {form2.map((value, index)=>(
                                 <>
@@ -161,7 +190,7 @@ export default function AddFunctionProblem() {
                                         fullWidth
                                         sx={{mb: 2}}
                                         value={objectList[index]}
-                                        onChange={handleChangeObject}
+                                        onChange={e=>handleChangeObject(index,e)}
                                         inputProps={{
                                             id: 'select-multiple-native',
                                         }}

@@ -67,7 +67,7 @@ export default function NewAction() {
 
         };
        // CreateVariable(data.get('name'), "Actions", params, id);
-        console.log(params);
+       // console.log(params);
         //DeleteVariableTemp(ref2, predParamsID, id);
        // DeleteVariableTemp(ref4, fxParamsID, id);
         navigate("/dashboard");
