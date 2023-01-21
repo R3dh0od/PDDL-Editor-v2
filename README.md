@@ -1,4 +1,4 @@
-# Editor PDDL creado con react JS y base de datos en Google CLoud Firestore.
+# Editor PDDL creado con React JS y base de datos en Google CLoud Firestore.
 
 
 Desarrollado por Ricardo Mera López
